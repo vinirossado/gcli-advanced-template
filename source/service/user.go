@@ -6,7 +6,11 @@ import (
 )
 
 type UserService interface {
-	GetUserById(id int64) (*model.User, error)
+	GetUsers() ([]*model.User, error)
+	GetUserById(id int) (*model.User, error)
+	CreateUser(*model.User) (int, error)
+	UpdateUser(*model.User) (bool, error)
+	DeleteUser(id int) (bool, error)
 }
 
 type userService struct {
@@ -21,6 +25,22 @@ func NewUserService(service *Service, userRepository repository.UserRepository) 
 	}
 }
 
-func (s *userService) GetUserById(id int64) (*model.User, error) {
-	return s.userRepository.FirstById(id)
+func (s *userService) GetUsers() ([]*model.User, error) {
+	return s.userRepository.GetUsers()
+}
+
+func (s *userService) GetUserById(id int) (*model.User, error) {
+	return s.userRepository.GetUserById(id)
+}
+
+func (s *userService) CreateUser(user *model.User) (int, error) {
+	return s.userRepository.CreateUser(user)
+}
+
+func (s *userService) UpdateUser(user *model.User) (bool, error) {
+	return s.userRepository.UpdateUser(user)
+}
+
+func (s *userService) DeleteUser(id int) (bool, error) {
+	return s.userRepository.DeleteUser(id)
 }

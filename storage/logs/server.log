@@ -1,1 +1,4 @@
 2023-07-15 20:51:43.076279900	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 00:50:32.263136100	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 00:50:58.162681900	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 00:52:52.918188600	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}

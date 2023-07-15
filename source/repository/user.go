@@ -3,7 +3,11 @@ package repository
 import "basic/source/model"
 
 type UserRepository interface {
-	FirstById(id int64) (*model.User, error)
+	GetUsers() ([]*model.User, error)
+	GetUserById(id int) (*model.User, error)
+	CreateUser(*model.User) (int, error)
+	UpdateUser(*model.User) (bool, error)
+	DeleteUser(id int) (bool, error)
 }
 type userRepository struct {
 	*Repository
@@ -15,7 +19,27 @@ func NewUserRepository(repository *Repository) UserRepository {
 	}
 }
 
-func (r *userRepository) FirstById(id int64) (*model.User, error) {
-	var user model.User
-	return &user, nil
+func (r *userRepository) GetUsers() ([]*model.User, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *userRepository) GetUserById(id int) (*model.User, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *userRepository) CreateUser(user *model.User) (int, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *userRepository) UpdateUser(user *model.User) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *userRepository) DeleteUser(id int) (bool, error) {
+	//TODO implement me
+	panic("implement me")
 }

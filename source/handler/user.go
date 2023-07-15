@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"basic/pkg/helper/convert"
 	"basic/pkg/helper/resp"
 	"basic/source/service"
 	"net/http"
@@ -11,7 +12,10 @@ import (
 
 type UserHandler interface {
 	GetUserById(ctx *gin.Context)
+	GetUsers(ctx *gin.Context)
+	CreateUser(ctx *gin.Context)
 	UpdateUser(ctx *gin.Context)
+	DeleteUser(ctx *gin.Context)
 }
 
 type userHandler struct {
@@ -26,16 +30,20 @@ func NewUserHandler(handler *Handler, userService service.UserService) UserHandl
 	}
 }
 
-func (h *userHandler) GetUserById(ctx *gin.Context) {
-	var params struct {
-		Id int64 `form:"id" binding:"required"`
-	}
-	if err := ctx.ShouldBind(&params); err != nil {
-		resp.HandleError(ctx, http.StatusBadRequest, 1, err.Error(), nil)
+func (h *userHandler) GetUsers(ctx *gin.Context) {
+	users, err := h.userService.GetUsers()
+	if err != nil {
+		h.logger.Info("GetUserByID", zap.Any("user", users))
+		resp.HandleError(ctx, http.StatusInternalServerError, 1, err.Error(), nil)
 		return
 	}
+	resp.HandleSuccess(ctx, users)
+}
 
-	user, err := h.userService.GetUserById(params.Id)
+func (h *userHandler) GetUserById(ctx *gin.Context) {
+	id := convert.ConvertToInt(ctx.Params.ByName("id"))
+
+	user, err := h.userService.GetUserById(id)
 	if err != nil {
 		h.logger.Info("GetUserByID", zap.Any("user", user))
 		resp.HandleError(ctx, http.StatusInternalServerError, 1, err.Error(), nil)
@@ -44,6 +52,14 @@ func (h *userHandler) GetUserById(ctx *gin.Context) {
 	resp.HandleSuccess(ctx, user)
 }
 
+func (h *userHandler) CreateUser(ctx *gin.Context) {
+	resp.HandleSuccess(ctx, nil)
+}
+
 func (h *userHandler) UpdateUser(ctx *gin.Context) {
+	resp.HandleSuccess(ctx, nil)
+}
+
+func (h *userHandler) DeleteUser(ctx *gin.Context) {
 	resp.HandleSuccess(ctx, nil)
 }
