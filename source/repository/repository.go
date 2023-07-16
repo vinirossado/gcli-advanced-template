@@ -1,9 +1,11 @@
 package repository
 
 import (
-	logger "basic/pkg/logger"
-
+	"basic/pkg/logger"
+	"github.com/spf13/viper"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
+	gormLogger "gorm.io/gorm/logger"
 )
 
 type Repository struct {
@@ -17,12 +19,12 @@ func NewRepository(logger *logger.Logger, db *gorm.DB) *Repository {
 		logger: logger,
 	}
 }
-func NewDb() *gorm.DB {
-	// TODO: init db
-	//db, err := gorm.Open(mysql.Open(conf.GetString("data.mysql.user")), &gorm.Config{})
-	//if err != nil {
-	//	panic(err)
-	//}
-	//return db
-	return &gorm.DB{}
+func NewDB(conf *viper.Viper) *gorm.DB {
+	db, err := gorm.Open(sqlserver.Open(conf.GetString("data.sqlserver.connectionString")), &gorm.Config{
+		Logger: gormLogger.Default.LogMode(gormLogger.Info),
+	})
+	if err != nil {
+		panic(err)
+	}
+	return db
 }

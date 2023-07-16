@@ -14,7 +14,8 @@ data:
     host: "127.0.0.1"
     port: 1433
     database: "sua-mae"
-    params: "charset=utf8mb4&parseTime=True&loc=Local"
+    params: "charset=utf8mb4&parseTime=True&loc=Local",
+    connectionString: "sqlserver://<username>:<password>@<host>:<port>?database=<database_name>&<params>",
   redis:
     addr: 127.0.0.1:6350
     password: ""
