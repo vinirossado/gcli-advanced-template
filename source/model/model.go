@@ -1,6 +1,6 @@
 package model
 
-func RetriveAll() []interface{} {
+func RetrieveAll() []interface{} {
 	return []interface{}{
 		&User{},
 	}

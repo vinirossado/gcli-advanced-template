@@ -18,16 +18,16 @@ func NewMigrate(db *gorm.DB, log *logger.Logger) *Migrate {
 	}
 }
 func (m *Migrate) Run() {
-	err := m.db.AutoMigrate(model.RetriveAll()...)
+	err := m.db.AutoMigrate(model.RetrieveAll()...)
 	if err != nil {
 		return
 	}
 
-	m.log.Info("AutoMigrate end")
+	m.log.Info("Migration ended")
 }
 
 func (m *Migrate) DropAll() {
-	err := m.db.Migrator().DropTable(model.RetriveAll()...)
+	err := m.db.Migrator().DropTable(model.RetrieveAll()...)
 	if err != nil {
 		return
 	}
