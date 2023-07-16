@@ -2,3 +2,11 @@
 2023-07-16 00:50:32.263136100	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-16 00:50:58.162681900	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-16 00:52:52.918188600	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 02:19:07.728084200	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 02:33:32.634292300	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:16	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 12:23:46.964133200	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 12:30:55.911873100	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 12:34:19.572105900	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 12:35:14.280554100	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 12:36:42.323734000	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 12:48:22.061373700	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:20	server start	{"host": "http://127.0.0.1:8000"}

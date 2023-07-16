@@ -1,46 +1,126 @@
 package service
 
 import (
+	"basic/pkg/helper/uuid"
 	"basic/source/model"
 	"basic/source/repository"
+	"context"
+	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
+type RegisterRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+}
+
+type LoginRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type UpdateProfileRequest struct {
+	Nickname string `json:"nickname"`
+	Email    string `json:"email" binding:"required,email"`
+	Avatar   string `json:"avatar"`
+}
+
+type ChangePasswordRequest struct {
+	OldPassword string `json:"oldPassword" binding:"required"`
+	NewPassword string `json:"newPassword" binding:"required"`
+}
+
 type UserService interface {
-	GetUsers() ([]*model.User, error)
-	GetUserById(id int) (*model.User, error)
-	CreateUser(*model.User) (int, error)
-	UpdateUser(*model.User) (bool, error)
-	DeleteUser(id int) (bool, error)
+	Register(ctx context.Context, req *RegisterRequest) error
+	Login(ctx context.Context, req *LoginRequest) (string, error)
+	GetProfile(ctx context.Context, userId string) (*model.User, error)
+	UpdateProfile(ctx context.Context, userId string, req *UpdateProfileRequest) error
+	GenerateToken(ctx context.Context, userId string) (string, error)
 }
 
 type userService struct {
+	userRepo repository.UserRepository
 	*Service
-	userRepository repository.UserRepository
 }
 
-func NewUserService(service *Service, userRepository repository.UserRepository) UserService {
+func NewUserService(service *Service, userRepo repository.UserRepository) UserService {
 	return &userService{
-		Service:        service,
-		userRepository: userRepository,
+		userRepo: userRepo,
+		Service:  service,
 	}
 }
 
-func (s *userService) GetUsers() ([]*model.User, error) {
-	return s.userRepository.GetUsers()
+func (s *userService) Register(ctx context.Context, req *RegisterRequest) error {
+	if user, err := s.userRepo.GetByUsername(ctx, req.Username); err == nil && user != nil {
+		return errors.New("username already exists")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return errors.Wrap(err, "failed to hash password")
+	}
+
+	user := &model.User{
+		UserId:   uuid.GenUUID(),
+		Username: req.Username,
+		Password: string(hashedPassword),
+		Email:    req.Email,
+	}
+	if err = s.userRepo.Create(ctx, user); err != nil {
+		return errors.Wrap(err, "failed to create user")
+	}
+
+	return nil
 }
 
-func (s *userService) GetUserById(id int) (*model.User, error) {
-	return s.userRepository.GetUserById(id)
+func (s *userService) Login(ctx context.Context, req *LoginRequest) (string, error) {
+	user, err := s.userRepo.GetByUsername(ctx, req.Username)
+	if err != nil || user == nil {
+		return "", errors.Wrap(err, "failed to get user by username")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
+		return "", errors.Wrap(err, "failed to hash password")
+	}
+	token, err := s.GenerateToken(ctx, user.UserId)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to generate JWT token")
+	}
+	return token, nil
 }
 
-func (s *userService) CreateUser(user *model.User) (int, error) {
-	return s.userRepository.CreateUser(user)
+func (s *userService) GetProfile(ctx context.Context, userId string) (*model.User, error) {
+	user, err := s.userRepo.GetByID(ctx, userId)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get user by ID")
+	}
+
+	return user, nil
 }
 
-func (s *userService) UpdateUser(user *model.User) (bool, error) {
-	return s.userRepository.UpdateUser(user)
+func (s *userService) UpdateProfile(ctx context.Context, userId string, req *UpdateProfileRequest) error {
+	user, err := s.userRepo.GetByID(ctx, userId)
+	if err != nil {
+		return errors.Wrap(err, "failed to get user by ID")
+	}
+
+	user.Email = req.Email
+	user.Nickname = req.Nickname
+
+	if err = s.userRepo.Update(ctx, user); err != nil {
+		return errors.Wrap(err, "failed to update user")
+	}
+
+	return nil
 }
 
-func (s *userService) DeleteUser(id int) (bool, error) {
-	return s.userRepository.DeleteUser(id)
+func (s *userService) GenerateToken(ctx context.Context, userId string) (string, error) {
+	//token, err := s.jwt.GenToken(userId, time.Now().Add(time.Hour*24*90))
+	//if err != nil {
+	//	return "", errors.Wrap(err, "failed to generate JWT token")
+	//}
+
+	return "token", nil
 }

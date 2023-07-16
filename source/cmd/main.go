@@ -13,13 +13,12 @@ func main() {
 	conf := config.NewConfig()
 	log := logger.NewLog(conf)
 
-	log.Info("server start", zap.String("host", "http://127.0.0.1:"+conf.GetString("http.port")))
-
 	app, cleanup, err := newApp(conf, log)
 	if err != nil {
 		panic(err)
 	}
-	defer cleanup()
+	log.Info("server start", zap.String("host", "http://127.0.0.1:"+conf.GetString("http.port")))
 
 	http.Run(app, fmt.Sprintf(":%d", conf.GetInt("http.port")))
+	defer cleanup()
 }
