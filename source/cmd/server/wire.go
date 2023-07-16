@@ -17,7 +17,7 @@ import (
 var ServerSet = wire.NewSet(server.NewServerHTTP)
 
 var RepositorySet = wire.NewSet(
-	repository.NewDb,
+	repository.NewDB,
 	repository.NewRepository,
 	repository.NewUserRepository,
 )

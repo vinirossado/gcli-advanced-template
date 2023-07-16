@@ -10,11 +10,12 @@ security:
 data:
   sqlserver:
     user: sa
-    password: "sua-maeEuOdeioReact2x"
-    host: "127.0.0.1"
+    password: sua-maeEuOdeioReact2x
+    host: 127.0.0.1
     port: 1433
-    database: "sua-mae"
-    params: "charset=utf8mb4&parseTime=True&loc=Local"
+    database: sua-mae
+    params: charset=utf8mb4&parseTime=True&loc=Local
+    connectionString: sqlserver://sa:sua-maeEuOdeioReact2x@127.0.0.1:1433?database=sua-mae&charset=utf8mb4&parseTime=True&loc=Local
   redis:
     addr: 127.0.0.1:6350
     password: ""
