@@ -12,3 +12,5 @@
 2023-07-16 12:48:22.061373700	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-16 17:30:32.218097000	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-16 17:35:08.446679500	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/migration/migration.go:26	AutoMigrate end
+2023-07-16 17:35:35.760588700	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-16 17:54:20.293909500	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}

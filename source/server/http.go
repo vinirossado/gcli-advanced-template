@@ -5,7 +5,7 @@ import (
 	"basic/pkg/logger"
 	"basic/source/handler"
 	"basic/source/middleware"
-	"basic/source/routes"
+	"basic/source/server/routes"
 	"github.com/gin-gonic/gin"
 )
 
