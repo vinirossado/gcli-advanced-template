@@ -7,6 +7,7 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
+	"time"
 )
 
 type RegisterRequest struct {
@@ -117,10 +118,10 @@ func (s *userService) UpdateProfile(ctx context.Context, userId string, req *Upd
 }
 
 func (s *userService) GenerateToken(ctx context.Context, userId string) (string, error) {
-	//token, err := s.jwt.GenToken(userId, time.Now().Add(time.Hour*24*90))
-	//if err != nil {
-	//	return "", errors.Wrap(err, "failed to generate JWT token")
-	//}
+	token, err := s.jwt.GenToken(userId, time.Now().Add(time.Hour*24*90))
+	if err != nil {
+		return "", errors.Wrap(err, "failed to generate JWT token")
+	}
 
-	return "token", nil
+	return token, nil
 }

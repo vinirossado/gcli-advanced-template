@@ -9,7 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewServerHTTP(logger *logger.Logger, userHandler handler.UserHandler) *gin.Engine {
+func NewServerHTTP(logger *logger.Logger,
+	jwt *middleware.JWT,
+	userHandler handler.UserHandler) *gin.Engine {
+	
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(
@@ -21,7 +24,6 @@ func NewServerHTTP(logger *logger.Logger, userHandler handler.UserHandler) *gin.
 			"say": "Hi sua-mae!",
 		})
 	})
-
 	routes.BindUserRoutes(r, userHandler)
 
 	return r

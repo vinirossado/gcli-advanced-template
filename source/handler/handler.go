@@ -2,6 +2,7 @@ package handler
 
 import (
 	"basic/pkg/logger"
+	"basic/source/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,10 +16,10 @@ func NewHandler(logger *logger.Logger) *Handler {
 	}
 }
 func GetUserIdFromCtx(ctx *gin.Context) string {
-	//v, exists := ctx.Get("claims")
-	//if !exists {
-	//	return ""
-	//}
-	//return v.(*middleware.MyCustomClaims).UserId
-	return "nil"
+	v, exists := ctx.Get("claims")
+
+	if !exists {
+		return ""
+	}
+	return v.(*middleware.MyCustomClaims).UserId
 }

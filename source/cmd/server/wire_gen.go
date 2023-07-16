@@ -9,6 +9,7 @@ package main
 import (
 	"basic/pkg/logger"
 	"basic/source/handler"
+	"basic/source/middleware"
 	"basic/source/repository"
 	"basic/source/server"
 	"basic/source/service"
@@ -20,14 +21,15 @@ import (
 // Injectors from wire.go:
 
 func newApp(viperViper *viper.Viper, loggerLogger *logger.Logger) (*gin.Engine, func(), error) {
+	jwt := middleware.NewJwt(viperViper)
 	handlerHandler := handler.NewHandler(loggerLogger)
-	serviceService := service.NewService(loggerLogger)
+	serviceService := service.NewService(loggerLogger, jwt)
 	db := repository.NewDB(viperViper)
 	repositoryRepository := repository.NewRepository(loggerLogger, db)
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	engine := server.NewServerHTTP(loggerLogger, userHandler)
+	engine := server.NewServerHTTP(loggerLogger, jwt, userHandler)
 	return engine, func() {
 	}, nil
 }
@@ -35,6 +37,8 @@ func newApp(viperViper *viper.Viper, loggerLogger *logger.Logger) (*gin.Engine, 
 // wire.go:
 
 var ServerSet = wire.NewSet(server.NewServerHTTP)
+
+var JwtSet = wire.NewSet(middleware.NewJwt)
 
 var RepositorySet = wire.NewSet(repository.NewDB, repository.NewRepository, repository.NewUserRepository)
 

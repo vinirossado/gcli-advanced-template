@@ -9,7 +9,7 @@ func BindUserRoutes(router *gin.Engine, userHandler handler.UserHandler) {
 	users := router.Group("/user")
 
 	//users.GET("", userHandler.)
-	users.GET("/:id", userHandler.GetProfile)
+	users.GET("", userHandler.GetProfile)
 	users.POST("/register", userHandler.Register)
 	users.POST("/login", userHandler.Login)
 	//users.PATCH("/:id", userHandler.DeleteUser)

@@ -6,6 +6,7 @@ package main
 import (
 	logger "basic/pkg/logger"
 	"basic/source/handler"
+	"basic/source/middleware"
 	"basic/source/repository"
 	"basic/source/server"
 	"basic/source/service"
@@ -15,6 +16,8 @@ import (
 )
 
 var ServerSet = wire.NewSet(server.NewServerHTTP)
+
+var JwtSet = wire.NewSet(middleware.NewJwt)
 
 var RepositorySet = wire.NewSet(
 	repository.NewDB,
@@ -38,5 +41,6 @@ func newApp(*viper.Viper, *logger.Logger) (*gin.Engine, func(), error) {
 		RepositorySet,
 		ServiceSet,
 		HandlerSet,
+		JwtSet,
 	))
 }
