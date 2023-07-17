@@ -78,7 +78,7 @@ func initZap(conf *viper.Viper) *Logger {
 	}
 	core := zapcore.NewCore(
 		encoder,
-		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)), // 打印到控制台和文件
+		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)),
 		level,
 	)
 	if conf.GetString("env") != "prod" {

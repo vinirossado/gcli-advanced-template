@@ -25,3 +25,11 @@
 2023-07-17 07:02:25.257123600	[33mwarn[0m	D:/Dev/BaseTemplateGcli/basic/source/middleware/jwt.go:69	token	{"data": {"params":null,"url":{"Scheme":"","Opaque":"","User":null,"Host":"","Path":"/user/login","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""}}}
 2023-07-17 07:02:34.738044300	[33mwarn[0m	D:/Dev/BaseTemplateGcli/basic/source/middleware/jwt.go:69	token	{"data": {"params":null,"url":{"Scheme":"","Opaque":"","User":null,"Host":"","Path":"/user/login","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""}}}
 2023-07-17 07:03:15.770361700	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:11:55.509847700	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:33:42.434721000	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:34:14.971092600	[33mwarn[0m	D:/Dev/BaseTemplateGcli/basic/source/middleware/jwt.go:69	token	{"data": {"params":null,"url":{"Scheme":"","Opaque":"","User":null,"Host":"","Path":"/user/register","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""}}}
+2023-07-17 07:34:43.664210600	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:35:16.464540600	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:38:54.000337900	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:41:57.996508700	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:42:37.583405000	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}

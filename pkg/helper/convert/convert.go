@@ -1,6 +1,6 @@
 package convert
 
-import(
+import (
 	"strings"
 
 	"golang.org/x/text/cases"
@@ -148,7 +148,7 @@ func UpperCamelCase(input string) string {
 }
 
 func LowerCamelCase(input string) string {
-	caser := cases.Title(language.BrazilianPortuguese)
+	caser := cases.Title(language.English)
 	rule := []string{}
 	rule = append(rule, ".", " ", "_", " ", "-", " ")
 	replacer := strings.NewReplacer(rule...)
