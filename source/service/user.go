@@ -1,11 +1,14 @@
 package service
 
 import (
+	"basic/pkg/cache"
 	"basic/pkg/helper/mapper"
 	"basic/pkg/helper/uuid"
 	"basic/source/model"
 	"basic/source/repository"
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -102,6 +105,19 @@ func (s *userService) Login(ctx context.Context, req *LoginRequest) (string, err
 }
 
 func (s *userService) GetProfile(ctx context.Context, userId string) (*UserResponse, error) {
+	if cache.Cache == nil {
+		fmt.Println("Cache not initialized.")
+		return &UserResponse{}, nil
+	}
+
+	if entry, err := cache.Cache.Get("user"); err == nil {
+		var userResponse UserResponse
+		err = json.Unmarshal(entry, &userResponse)
+		if err == nil {
+			return &userResponse, nil
+		}
+	}
+
 	user, err := s.userRepo.GetByID(ctx, userId)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get user by ID")
@@ -110,6 +126,13 @@ func (s *userService) GetProfile(ctx context.Context, userId string) (*UserRespo
 	var userResponse UserResponse
 	mapper.Map(user, &userResponse)
 
+	responseBytes, err := json.Marshal(userResponse)
+	if err == nil {
+		err = cache.Cache.Set("user", responseBytes)
+		if err != nil {
+			fmt.Println("Fail to save cache:", err)
+		}
+	}
 	return &userResponse, nil
 }
 

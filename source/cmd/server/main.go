@@ -1,6 +1,7 @@
 package main
 
 import (
+	"basic/pkg/cache"
 	"basic/pkg/config"
 	"basic/pkg/http"
 	"basic/pkg/logger"
@@ -12,7 +13,7 @@ import (
 func main() {
 	conf := config.NewConfig()
 	log := logger.NewLog(conf)
-
+	cache.MemoryCache()
 	app, cleanup, err := newApp(conf, log)
 	if err != nil {
 		panic(err)
