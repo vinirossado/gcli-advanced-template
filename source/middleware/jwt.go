@@ -51,7 +51,7 @@ func (j *JWT) GenToken(userId string, expiresAt time.Time) (string, error) {
 func (j *JWT) ParseToken(tokenString string) (*MyCustomClaims, error) {
 	re := regexp.MustCompile(`(?i)Bearer `)
 	tokenString = re.ReplaceAllString(tokenString, "")
-	token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (any, error) {
 		return j.key, nil
 	})
 
@@ -77,7 +77,7 @@ func StrictAuth(j *JWT, logger *logger.Logger) gin.HandlerFunc {
 
 		claims, err := j.ParseToken(tokenString)
 		if err != nil {
-			logger.WithContext(ctx).Error("token error", zap.Any("data", map[string]interface{}{
+			logger.WithContext(ctx).Error("token error", zap.Any("data", map[string]any{
 				"url":    ctx.Request.URL,
 				"params": ctx.Params,
 			}))

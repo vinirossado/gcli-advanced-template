@@ -20,3 +20,7 @@
 2023-07-16 23:52:38.872000900	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-16 23:59:06.791263000	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-17 00:00:04.898031500	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:02:15.293123100	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
+2023-07-17 07:02:22.801397200	[33mwarn[0m	D:/Dev/BaseTemplateGcli/basic/source/middleware/jwt.go:69	token	{"data": {"params":null,"url":{"Scheme":"","Opaque":"","User":null,"Host":"","Path":"/user/login","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""}}}
+2023-07-17 07:02:25.257123600	[33mwarn[0m	D:/Dev/BaseTemplateGcli/basic/source/middleware/jwt.go:69	token	{"data": {"params":null,"url":{"Scheme":"","Opaque":"","User":null,"Host":"","Path":"/user/login","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""}}}
+2023-07-17 07:02:34.738044300	[33mwarn[0m	D:/Dev/BaseTemplateGcli/basic/source/middleware/jwt.go:69	token	{"data": {"params":null,"url":{"Scheme":"","Opaque":"","User":null,"Host":"","Path":"/user/login","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""}}}
