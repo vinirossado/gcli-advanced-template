@@ -1,6 +1,7 @@
 package service
 
 import (
+	"basic/pkg/helper/mapper"
 	"basic/pkg/helper/uuid"
 	"basic/source/model"
 	"basic/source/repository"
@@ -32,10 +33,18 @@ type ChangePasswordRequest struct {
 	NewPassword string `json:"newPassword" binding:"required"`
 }
 
+type UserResponse struct {
+	Id       uint   `json:"id"`
+	UserId   string `json:"userId"`
+	Username string `json:"username"`
+	Nickname string `json:"nickname"`
+	Email    string `json:"email"`
+}
+
 type UserService interface {
 	Register(ctx context.Context, req *RegisterRequest) error
 	Login(ctx context.Context, req *LoginRequest) (string, error)
-	GetProfile(ctx context.Context, userId string) (*model.User, error)
+	GetProfile(ctx context.Context, userId string) (*UserResponse, error)
 	UpdateProfile(ctx context.Context, userId string, req *UpdateProfileRequest) error
 	GenerateToken(ctx context.Context, userId string) (string, error)
 }
@@ -92,13 +101,16 @@ func (s *userService) Login(ctx context.Context, req *LoginRequest) (string, err
 	return token, nil
 }
 
-func (s *userService) GetProfile(ctx context.Context, userId string) (*model.User, error) {
+func (s *userService) GetProfile(ctx context.Context, userId string) (*UserResponse, error) {
 	user, err := s.userRepo.GetByID(ctx, userId)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get user by ID")
 	}
 
-	return user, nil
+	var userResponse UserResponse
+	mapper.Map(user, &userResponse)
+
+	return &userResponse, nil
 }
 
 func (s *userService) UpdateProfile(ctx context.Context, userId string, req *UpdateProfileRequest) error {
