@@ -1,11 +1,10 @@
-package server
+package routes
 
 import (
 	"basic/pkg/helper/resp"
 	"basic/pkg/logger"
 	"basic/source/handler"
 	"basic/source/middleware"
-	"basic/source/server/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +24,7 @@ func NewServerHTTP(logger *logger.Logger,
 		})
 	})
 
-	routes.BindUserRoutes(r, jwt, userHandler, logger)
+	BindUserRoutes(r, jwt, userHandler, logger)
 
 	return r
 }

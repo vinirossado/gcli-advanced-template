@@ -11,7 +11,7 @@ import (
 	"basic/source/handler"
 	"basic/source/middleware"
 	"basic/source/repository"
-	"basic/source/server"
+	"basic/source/router"
 	"basic/source/service"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -29,14 +29,14 @@ func newApp(viperViper *viper.Viper, loggerLogger *logger.Logger) (*gin.Engine, 
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	engine := server.NewServerHTTP(loggerLogger, jwt, userHandler)
+	engine := routes.NewServerHTTP(loggerLogger, jwt, userHandler)
 	return engine, func() {
 	}, nil
 }
 
 // wire.go:
 
-var ServerSet = wire.NewSet(server.NewServerHTTP)
+var ServerSet = wire.NewSet(routes.NewServerHTTP)
 
 var JwtSet = wire.NewSet(middleware.NewJwt)
 

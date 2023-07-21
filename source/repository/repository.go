@@ -19,6 +19,7 @@ func NewRepository(logger *logger.Logger, db *gorm.DB) *Repository {
 		logger: logger,
 	}
 }
+
 func NewDB(conf *viper.Viper) *gorm.DB {
 	db, err := gorm.Open(sqlserver.Open(conf.GetString("data.sqlserver.connectionString")), &gorm.Config{
 		Logger: gormLogger.Default.LogMode(gormLogger.Info),

@@ -8,14 +8,14 @@ import (
 	"basic/source/handler"
 	"basic/source/middleware"
 	"basic/source/repository"
-	"basic/source/server"
+	"basic/source/router"
 	"basic/source/service"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )
 
-var ServerSet = wire.NewSet(server.NewServerHTTP)
+var ServerSet = wire.NewSet(routes.NewServerHTTP)
 
 var JwtSet = wire.NewSet(middleware.NewJwt)
 
