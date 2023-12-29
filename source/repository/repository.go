@@ -31,11 +31,11 @@ func NewRepository(logger *logger.Logger, db *gorm.DB) *Repository {
 
 func NewDB(dbType DBType, conf *viper.Viper) *gorm.DB {
 	var db *gorm.DB
-	//if dbType == PostgreSQL {
-	//}
-	db, _ = connectPostgresql(conf)
-	//db, _ = connectSqlServer(conf)
-
+	if dbType == PostgreSQL {
+		db, _ = connectPostgresql(conf)
+		return db
+	}
+	db, _ = connectSqlServer(conf)
 	return db
 }
 
