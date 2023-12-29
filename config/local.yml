@@ -1,6 +1,6 @@
 env: local
 http:
-  port: 8000
+  port: 8111
 security:
   api_sign:
     app_key: 123456
@@ -19,7 +19,7 @@ data:
   postgresql:
     user: postgres
     password: sua-maeEuOdeioReact2x
-    connectionString: postgres://sa:sua-maeEuOdeioReact2x@127.0.0.1:2345/sua-mae?sslmode=disable
+    connectionString: postgres://postgres:sua-maeEuOdeioReact2x@127.0.0.1:2345/sua-mae?sslmode=disable
     host:
   redis:
     addr: 127.0.0.1:6350

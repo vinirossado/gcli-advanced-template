@@ -1,0 +1,7 @@
+2023-12-29 13:47:36.588097023	[34minfo[0m	/media/rossado/New Volume/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8000"}
+2023-12-29 13:53:00.263059832	[34minfo[0m	/media/rossado/New Volume/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8000"}
+2023-12-29 14:03:53.797230406	[34minfo[0m	/media/rossado/New Volume/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8000"}
+2023-12-29 14:11:50.251100870	[34minfo[0m	/media/rossado/New Volume/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8000"}
+2023-12-29 14:12:58.836505786	[34minfo[0m	/media/rossado/New Volume/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8000"}
+2023-12-29 14:14:00.123411781	[34minfo[0m	/media/rossado/New Volume/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8000"}
+2023-12-29 14:16:40.253780532	[34minfo[0m	/media/rossado/New Volume/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8111"}

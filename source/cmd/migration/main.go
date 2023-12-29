@@ -11,7 +11,7 @@ func main() {
 	log := logger.NewLog(conf)
 
 	dbType := repository.PostgreSQL
-	
+
 	_ = repository.NewDB(dbType, conf)
 
 	app, cleanup, err := newApp(dbType, conf, log)
