@@ -3,13 +3,26 @@ package main
 import (
 	"basic/pkg/config"
 	logger "basic/pkg/logger"
+	"basic/source/repository"
 )
 
 func main() {
 	conf := config.NewConfig()
 	log := logger.NewLog(conf)
 
-	app, cleanup, err := newApp(conf, log)
+	dbType := repository.PostgreSQL
+	gormDb, err := repository.NewDB(dbType, conf)
+
+	db, err := gormDb.Connect()
+
+	if err != nil {
+		panic(err)
+	}
+
+	_ = repository.NewRepository(log, db)
+
+	app, cleanup, err := newApp(dbType, conf, db, log)
+
 	if err != nil {
 		panic(err)
 	}

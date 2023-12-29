@@ -12,19 +12,17 @@ import (
 	"basic/source/repository"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
 // Injectors from wire.go:
 
-func newApp(viperViper *viper.Viper, loggerLogger *logger.Logger) (*migration.Migrate, func(), error) {
-	db := repository.NewDB(viperViper)
-	migrate := migration.NewMigrate(db, loggerLogger)
+func newApp(dbType repository.DBType, conf *viper.Viper, db *gorm.DB, logger2 *logger.Logger) (*migration.Migrate, func(), error) {
+	migrate := migration.NewMigrate(db, logger2)
 	return migrate, func() {
 	}, nil
 }
 
 // wire.go:
-
-var RepositorySet = wire.NewSet(repository.NewDB, repository.NewRepository, repository.NewUserRepository)
 
 var MigrateSet = wire.NewSet(migration.NewMigrate)
