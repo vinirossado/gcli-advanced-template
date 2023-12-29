@@ -16,8 +16,8 @@ import (
 
 // Injectors from wire.go:
 
-func newApp(viperViper *viper.Viper, loggerLogger *logger.Logger) (*migration.Migrate, func(), error) {
-	db := repository.NewDB(viperViper)
+func newApp(dbType repository.DBType, viperViper *viper.Viper, loggerLogger *logger.Logger) (*migration.Migrate, func(), error) {
+	db := repository.NewDB(dbType, viperViper)
 	migrate := migration.NewMigrate(db, loggerLogger)
 	return migrate, func() {
 	}, nil

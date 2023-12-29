@@ -1,6 +1,6 @@
 env: local
 http:
-  port: 8000
+  port: 8111
 security:
   api_sign:
     app_key: 123456
@@ -16,6 +16,11 @@ data:
     database: sua-mae
     params: charset=utf8mb4&parseTime=True&loc=Local
     connectionString: sqlserver://sa:sua-maeEuOdeioReact2x@127.0.0.1:1433?database=sua-mae&charset=utf8mb4&parseTime=True&loc=Local
+  postgresql:
+    user: postgres
+    password: sua-maeEuOdeioReact2x
+    connectionString: postgres://postgres:sua-maeEuOdeioReact2x@127.0.0.1:2345/sua-mae?sslmode=disable
+    host:
   redis:
     addr: 127.0.0.1:6350
     password: ""

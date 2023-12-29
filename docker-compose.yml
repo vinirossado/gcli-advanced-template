@@ -11,3 +11,13 @@ services:
       MSSQL_DATABASE: "sua-mae"
     ports:
       - "1433:1433"
+  postgresql:
+    image: postgres:latest
+    container_name: my_postgresql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sua-maeEuOdeioReact2x
+      POSTGRES_DB: sua-mae
+    ports:
+      - "2345:5432"
+   

@@ -5,6 +5,7 @@ import (
 	"basic/pkg/config"
 	"basic/pkg/http"
 	"basic/pkg/logger"
+	"basic/source/repository"
 	"fmt"
 
 	"go.uber.org/zap"
@@ -14,7 +15,12 @@ func main() {
 	conf := config.NewConfig()
 	log := logger.NewLog(conf)
 	cache.MemoryCache()
-	app, cleanup, err := newApp(conf, log)
+	dbType := repository.PostgreSQL
+
+	_ = repository.NewDB(dbType, conf)
+
+	app, cleanup, err := newApp(dbType, conf, log)
+
 	if err != nil {
 		panic(err)
 	}

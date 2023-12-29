@@ -21,7 +21,7 @@ var MigrateSet = wire.NewSet(
 	migration.NewMigrate,
 )
 
-func newApp(*viper.Viper, *logger.Logger) (*migration.Migrate, func(), error) {
+func newApp(repository.DBType, *viper.Viper, *logger.Logger) (*migration.Migrate, func(), error) {
 	panic(wire.Build(
 		RepositorySet,
 		MigrateSet,

@@ -20,11 +20,11 @@ import (
 
 // Injectors from wire.go:
 
-func newApp(viperViper *viper.Viper, loggerLogger *logger.Logger) (*gin.Engine, func(), error) {
+func newApp(dbType repository.DBType, viperViper *viper.Viper, loggerLogger *logger.Logger) (*gin.Engine, func(), error) {
 	jwt := middleware.NewJwt(viperViper)
 	handlerHandler := handler.NewHandler(loggerLogger)
 	serviceService := service.NewService(loggerLogger, jwt)
-	db := repository.NewDB(viperViper)
+	db := repository.NewDB(dbType, viperViper)
 	repositoryRepository := repository.NewRepository(loggerLogger, db)
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)

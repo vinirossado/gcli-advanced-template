@@ -35,7 +35,7 @@ var HandlerSet = wire.NewSet(
 	handler.NewUserHandler,
 )
 
-func newApp(*viper.Viper, *logger.Logger) (*gin.Engine, func(), error) {
+func newApp(repository.DBType, *viper.Viper, *logger.Logger) (*gin.Engine, func(), error) {
 	panic(wire.Build(
 		ServerSet,
 		RepositorySet,

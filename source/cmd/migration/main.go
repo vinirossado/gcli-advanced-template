@@ -3,13 +3,19 @@ package main
 import (
 	"basic/pkg/config"
 	logger "basic/pkg/logger"
+	"basic/source/repository"
 )
 
 func main() {
 	conf := config.NewConfig()
 	log := logger.NewLog(conf)
 
-	app, cleanup, err := newApp(conf, log)
+	dbType := repository.PostgreSQL
+
+	_ = repository.NewDB(dbType, conf)
+
+	app, cleanup, err := newApp(dbType, conf, log)
+
 	if err != nil {
 		panic(err)
 	}
