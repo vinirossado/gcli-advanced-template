@@ -1,3 +1,6 @@
+//go:build wireinject
+// +build wireinject
+
 package main
 
 import (
@@ -6,15 +9,21 @@ import (
 	"basic/source/repository"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
+)
+
+var RepositorySet = wire.NewSet(
+	repository.NewDB,
+	repository.NewRepository,
+	repository.NewUserRepository,
 )
 
 var MigrateSet = wire.NewSet(
 	migration.NewMigrate,
 )
 
-func newApp(dbType repository.DBType, conf *viper.Viper, db *gorm.DB, logger *logger.Logger) (*migration.Migrate, func(), error) {
+func newApp(repository.DBType, *viper.Viper, *logger.Logger) (*migration.Migrate, func(), error) {
 	panic(wire.Build(
+		RepositorySet,
 		MigrateSet,
 	))
 }

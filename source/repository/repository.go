@@ -13,21 +13,9 @@ import (
 type DBType string
 
 const (
-	SqlServer  DBType = "sqlserver"
-	PostgreSQL DBType = "postgresql"
+	SqlServer  DBType = "data.sqlserver.connectionString"
+	PostgreSQL DBType = "data.postgresql.connectionString"
 )
-
-type Database interface {
-	Connect() (*gorm.DB, error)
-}
-
-type SQLServerDatabase struct {
-	connectionString string
-}
-
-type PostgreSQLDatabase struct {
-	connectionString string
-}
 
 type Repository struct {
 	db     *gorm.DB
@@ -41,39 +29,35 @@ func NewRepository(logger *logger.Logger, db *gorm.DB) *Repository {
 	}
 }
 
-func NewDB(dbType DBType, conf *viper.Viper) (Database, error) {
-	switch dbType {
-	case SqlServer:
-		return &SQLServerDatabase{
-			connectionString: conf.GetString("data.sqlserver.connectionString"),
-		}, nil
-	case PostgreSQL:
-		return &PostgreSQLDatabase{
-			connectionString: conf.GetString("data.postgresql.connectionString"),
-		}, nil
-	default:
-		return nil, fmt.Errorf("unsupported database type: %s", dbType)
+func NewDB(dbType DBType, conf *viper.Viper) *gorm.DB {
+	var db *gorm.DB
+	if dbType == PostgreSQL {
+		db, _ = connectPostgresql(conf)
 	}
+	db, _ = connectSqlServer(conf)
+
+	return db
 }
 
-func (s *SQLServerDatabase) Connect() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlserver.Open(s.connectionString), &gorm.Config{
+func connectSqlServer(conf *viper.Viper) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlserver.Open(conf.GetString(string(SqlServer))), &gorm.Config{
 		Logger: gormLogger.Default.LogMode(gormLogger.Info),
 	})
-
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	
+	defer db.Close()
+
 	return db, nil
 }
 
-func (p *PostgreSQLDatabase) Connect() (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open(p.connectionString), &gorm.Config{
+func connectPostgresql(conf *viper.Viper) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(conf.GetString(string(PostgreSQL))), &gorm.Config{
 		Logger: gormLogger.Default.LogMode(gormLogger.Info),
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to open PostgreSQL database: %w", err)
 	}
+	defer db.Close()
 	return db, nil
 }

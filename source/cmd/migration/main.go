@@ -11,17 +11,10 @@ func main() {
 	log := logger.NewLog(conf)
 
 	dbType := repository.PostgreSQL
-	gormDb, err := repository.NewDB(dbType, conf)
+	
+	_ = repository.NewDB(dbType, conf)
 
-	db, err := gormDb.Connect()
-
-	if err != nil {
-		panic(err)
-	}
-
-	_ = repository.NewRepository(log, db)
-
-	app, cleanup, err := newApp(dbType, conf, db, log)
+	app, cleanup, err := newApp(dbType, conf, log)
 
 	if err != nil {
 		panic(err)
