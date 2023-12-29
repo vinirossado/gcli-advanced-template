@@ -2,8 +2,10 @@ package config
 
 import (
 	"flag"
-	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -15,12 +17,14 @@ func NewConfig() *viper.Viper {
 		flag.Parse()
 	}
 	if envConf == "" {
-		envConf = "config/local.yml"
+		envConf = "../config/local.yml"
 	}
-	fmt.Println("load conf file:", envConf)
-	return getConfig(envConf)
 
+	basepath := getConfigPath() + "/config/local.yml"
+
+	return getConfig(basepath)
 }
+
 func getConfig(path string) *viper.Viper {
 	conf := viper.New()
 	conf.SetConfigFile(path)
@@ -29,4 +33,15 @@ func getConfig(path string) *viper.Viper {
 		panic(err)
 	}
 	return conf
+}
+
+func getConfigPath() string {
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+	index := strings.LastIndex(basepath, "/pkg")
+	if index != -1 {
+		basepath = basepath[:index]
+	}
+
+	return basepath
 }
