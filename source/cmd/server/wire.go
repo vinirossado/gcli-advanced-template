@@ -5,11 +5,9 @@ package main
 
 import (
 	logger "basic/pkg/logger"
-	"basic/source/handler"
 	"basic/source/middleware"
 	"basic/source/repository"
 	"basic/source/router"
-	"basic/source/service"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
@@ -19,10 +17,9 @@ var ServerSet = wire.NewSet(routes.NewServerHTTP)
 
 var JwtSet = wire.NewSet(middleware.NewJwt)
 
-var RepositorySet = wire.NewSet(
-	repository.NewDB,
-	repository.NewRepository,
-	repository.NewUserRepository,
+var HandlerSet = wire.NewSet(
+	handler.NewHandler,
+	handler.NewUserHandler,
 )
 
 var ServiceSet = wire.NewSet(
@@ -30,9 +27,10 @@ var ServiceSet = wire.NewSet(
 	service.NewUserService,
 )
 
-var HandlerSet = wire.NewSet(
-	handler.NewHandler,
-	handler.NewUserHandler,
+var RepositorySet = wire.NewSet(
+	repository.NewDB,
+	repository.NewRepository,
+	repository.NewUserRepository,
 )
 
 func newApp(repository.DBType, *viper.Viper, *logger.Logger) (*gin.Engine, func(), error) {
