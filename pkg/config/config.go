@@ -38,10 +38,12 @@ func getConfig(path string) *viper.Viper {
 func getConfigPath() string {
 	_, b, _, _ := runtime.Caller(0)
 	basepath := filepath.Dir(b)
+	if runtime.GOOS == "windows" {
+		basepath = strings.Replace(basepath, "\\", "/", -1)
+	}
 	index := strings.LastIndex(basepath, "/pkg")
 	if index != -1 {
 		basepath = basepath[:index]
 	}
-
 	return basepath
 }
