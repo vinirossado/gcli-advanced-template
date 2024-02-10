@@ -36,3 +36,5 @@
 2023-07-17 20:37:35.222286600	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:20	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-17 20:39:35.030398900	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:21	server start	{"host": "http://127.0.0.1:8000"}
 2023-07-17 20:42:40.156702000	[34minfo[0m	D:/Dev/BaseTemplateGcli/basic/source/cmd/server/main.go:21	server start	{"host": "http://127.0.0.1:8000"}
+2024-02-10 11:45:38.588356921	[34minfo[0m	/home/rossado/Documents/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8111"}
+2024-02-10 11:48:41.723572070	[34minfo[0m	/home/rossado/Documents/Dev/gcli-advanced-template/source/cmd/server/main.go:27	server start	{"host": "http://127.0.0.1:8111"}
