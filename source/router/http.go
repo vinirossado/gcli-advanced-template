@@ -20,7 +20,7 @@ func NewServerHTTP(logger *logger.Logger,
 
 	r.GET("/", func(ctx *gin.Context) {
 		resp.HandleSuccess(ctx, map[string]interface{}{
-			"say": "Hi sua-mae!",
+			"say": "Hi Welcome to your new API!",
 		})
 	})
 

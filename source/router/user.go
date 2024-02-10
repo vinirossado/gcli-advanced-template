@@ -14,8 +14,4 @@ func BindUserRoutes(router *gin.Engine, jwt *middleware.JWT, userHandler handler
 
 	users.Use(middleware.StrictAuth(jwt, log))
 	users.GET("", userHandler.GetProfile)
-
-	//users.PATCH("/:id", userHandler.DeleteUser)
-	//users.GET("", middlewares.AuthorizationMiddleware(enumerations.NORMAL), controllers.FindUsers)
-	//users.GET("/:id", middlewares.AuthorizationMiddleware(enumerations.NORMAL), controllers.FindUserById)
 }
