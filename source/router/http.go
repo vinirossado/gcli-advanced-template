@@ -6,6 +6,7 @@ import (
 	"basic/source/handler"
 	"basic/source/middleware"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func NewServerHTTP(logger *logger.Logger,
@@ -19,7 +20,7 @@ func NewServerHTTP(logger *logger.Logger,
 	)
 
 	r.GET("/", func(ctx *gin.Context) {
-		resp.HandleSuccess(ctx, map[string]interface{}{
+		resp.HandleSuccess(ctx, http.StatusOK, "Connected", map[string]interface{}{
 			"say": "Hi Welcome to your new API!",
 		})
 	})

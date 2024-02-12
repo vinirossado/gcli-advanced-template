@@ -39,7 +39,7 @@ func (h *userHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	resp.HandleSuccess(ctx, nil)
+	resp.HandleSuccess(ctx, http.StatusCreated, "New account has been created.", nil)
 }
 
 func (h *userHandler) Login(ctx *gin.Context) {
@@ -55,7 +55,7 @@ func (h *userHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	resp.HandleSuccess(ctx, gin.H{
+	resp.HandleSuccess(ctx, http.StatusOK, "Login Success", gin.H{
 		"accessToken": token,
 	})
 }
@@ -63,7 +63,7 @@ func (h *userHandler) Login(ctx *gin.Context) {
 func (h *userHandler) GetProfile(ctx *gin.Context) {
 	userId := GetUserIdFromCtx(ctx)
 	if userId == "" {
-		resp.HandleError(ctx, http.StatusUnauthorized, 1, "unauthorized", nil)
+		resp.HandleError(ctx, http.StatusUnauthorized, 1, "Unauthorized", nil)
 		return
 	}
 
@@ -73,7 +73,9 @@ func (h *userHandler) GetProfile(ctx *gin.Context) {
 		return
 	}
 
-	resp.HandleSuccess(ctx, user)
+	resp.HandleSuccess(ctx, http.StatusOK, "Get Profile", gin.H{
+		"user": user,
+	})
 }
 
 func (h *userHandler) UpdateProfile(ctx *gin.Context) {
@@ -90,5 +92,7 @@ func (h *userHandler) UpdateProfile(ctx *gin.Context) {
 		return
 	}
 
-	resp.HandleSuccess(ctx, nil)
+	resp.HandleSuccess(ctx, http.StatusOK, "Updated User", gin.H{
+		"updated": "true",
+	})
 }
