@@ -5,6 +5,7 @@ package main
 
 import (
 	logger "basic/pkg/logger"
+	"basic/source/handler"
 	"basic/source/middleware"
 	"basic/source/repository"
 	"basic/source/router"
