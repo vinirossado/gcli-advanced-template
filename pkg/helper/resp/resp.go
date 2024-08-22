@@ -1,8 +1,9 @@
 package resp
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type response struct {
@@ -19,10 +20,10 @@ func HandleSuccess(ctx *gin.Context, code int, message string, data interface{})
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func HandleError(ctx *gin.Context, httpCode, code int, message string, data interface{}) {
+func HandleError(ctx *gin.Context, httpCode int, message string, data interface{}) {
 	if data == nil {
 		data = map[string]string{}
 	}
-	resp := response{Code: code, Message: message, Data: data}
+	resp := response{Code: httpCode, Message: message, Data: data}
 	ctx.JSON(httpCode, resp)
 }

@@ -1,16 +1,18 @@
 package middleware
 
 import (
-	"basic/pkg/logger"
-	"github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"regexp"
 	"time"
 
-	"basic/pkg/helper/resp"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+
+	"basic/pkg/helper/resp"
+	"basic/pkg/logger"
+	"basic/source/middleware"
 )
 
 type JWT struct {
@@ -62,26 +64,26 @@ func (j *JWT) ParseToken(tokenString string) (*MyCustomClaims, error) {
 	}
 }
 
-func StrictAuth(j *JWT, logger *logger.Logger) gin.HandlerFunc {
+func StrictAuth(j *middleware.JWT, logger *logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tokenString := ctx.Request.Header.Get("Authorization")
 		if tokenString == "" {
-			logger.WithContext(ctx).Warn("token", zap.Any("data", map[string]any{
+			logger.WithContext(ctx).Warn("No token", zap.Any("data", map[string]interface{}{
 				"url":    ctx.Request.URL,
 				"params": ctx.Params,
 			}))
-			resp.HandleError(ctx, http.StatusUnauthorized, 1, "no token", nil)
+			resp.HandleError(ctx, http.StatusUnauthorized, "non-auth", nil)
 			ctx.Abort()
 			return
 		}
 
 		claims, err := j.ParseToken(tokenString)
 		if err != nil {
-			logger.WithContext(ctx).Error("token error", zap.Any("data", map[string]any{
+			logger.WithContext(ctx).Error("token error", zap.Any("data", map[string]interface{}{
 				"url":    ctx.Request.URL,
 				"params": ctx.Params,
-			}))
-			resp.HandleError(ctx, http.StatusUnauthorized, 1, err.Error(), nil)
+			}), zap.Error(err))
+			resp.HandleError(ctx, http.StatusUnauthorized, "non-auth", nil)
 			ctx.Abort()
 			return
 		}
@@ -92,7 +94,7 @@ func StrictAuth(j *JWT, logger *logger.Logger) gin.HandlerFunc {
 	}
 }
 
-func NoStrictAuth(j *JWT, logger *logger.Logger) gin.HandlerFunc {
+func NoStrictAuth(j *middleware.JWT, logger *logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tokenString := ctx.Request.Header.Get("Authorization")
 		if tokenString == "" {
@@ -119,6 +121,7 @@ func NoStrictAuth(j *JWT, logger *logger.Logger) gin.HandlerFunc {
 }
 
 func recoveryLoggerFunc(ctx *gin.Context, logger *logger.Logger) {
-	userInfo := ctx.MustGet("claims").(*MyCustomClaims)
-	logger.NewContext(ctx, zap.String("UserId", userInfo.UserId))
+	if userInfo, ok := ctx.MustGet("claims").(*middleware.MyCustomClaims); ok {
+		logger.WithValue(ctx, zap.String("UserId", userInfo.UserId))
+	}
 }

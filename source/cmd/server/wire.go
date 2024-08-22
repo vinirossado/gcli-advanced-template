@@ -4,43 +4,57 @@
 package main
 
 import (
-	logger "basic/pkg/logger"
+	"log"
+	"net/http"
+
+	"github.com/google/wire"
+	"github.com/spf13/viper"
+
 	"basic/source/handler"
 	"basic/source/middleware"
 	"basic/source/repository"
-	"basic/source/router"
+	routes "basic/source/router"
 	"basic/source/service"
-	"github.com/gin-gonic/gin"
-	"github.com/google/wire"
-	"github.com/spf13/viper"
 )
 
-var ServerSet = wire.NewSet(routes.NewServerHTTP)
+var serverSet = wire.NewSet(routes.NewServerHTTP)
 
 var JwtSet = wire.NewSet(middleware.NewJwt)
 
-var HandlerSet = wire.NewSet(
+var handlerSet = wire.NewSet(
 	handler.NewHandler,
 	handler.NewUserHandler,
 )
 
-var ServiceSet = wire.NewSet(
+var serviceSet = wire.NewSet(
 	service.NewService,
 	service.NewUserService,
 )
 
-var RepositorySet = wire.NewSet(
+var repositorySet = wire.NewSet(
 	repository.NewDB,
 	repository.NewRepository,
+	repository.NewTransaction,
 	repository.NewUserRepository,
 )
 
-func newApp(repository.DBType, *viper.Viper, *logger.Logger) (*gin.Engine, func(), error) {
+func newApp(
+	httpServer *http.Server,
+) *app.App {
+	return app.NewApp(
+		app.WithServer(httpServer, job),
+		app.WithName("demo-server"),
+	)
+}
+
+func NewWire(*viper.Viper, *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
-		ServerSet,
-		RepositorySet,
-		ServiceSet,
-		HandlerSet,
-		JwtSet,
+		repositorySet,
+		serviceSet,
+		handlerSet,
+		serverSet,
+		// sid.NewSid,
+		// jwt.NewJwt,
+		newApp,
 	))
 }

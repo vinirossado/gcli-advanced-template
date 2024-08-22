@@ -1,31 +1,32 @@
 package main
 
 import (
-	"basic/pkg/cache"
-	"basic/pkg/config"
-	"basic/pkg/http"
-	"basic/pkg/logger"
-	"basic/source/repository"
+	"context"
+	"flag"
 	"fmt"
 
 	"go.uber.org/zap"
+
+	"basic/cmd/server/wire"
+	"basic/pkg/config"
+	"basic/pkg/log"
 )
 
 func main() {
-	conf := config.NewConfig()
-	log := logger.NewLog(conf)
-	cache.MemoryCache()
-	dbType := repository.PostgreSQL
+	var envConf = flag.String("conf", "config/local.yml", "config path, eg: -conf ./config/local.yml")
+	flag.Parse()
+	conf := config.NewConfig(*envConf)
 
-	_ = repository.NewDB(dbType, conf)
+	logger := log.NewLog(conf)
 
-	app, cleanup, err := newApp(dbType, conf, log)
-
+	app, cleanup, err := wire.NewWire(conf, logger)
+	defer cleanup()
 	if err != nil {
 		panic(err)
 	}
-	log.Info("server start", zap.String("host", "http://127.0.0.1:"+conf.GetString("http.port")))
-
-	http.Run(app, fmt.Sprintf(":%d", conf.GetInt("http.port")))
-	defer cleanup()
+	logger.Info("server start", zap.String("host", fmt.Sprintf("http://%s:%d", conf.GetString("http.host"), conf.GetInt("http.port"))))
+	logger.Info("docs addr", zap.String("addr", fmt.Sprintf("http://%s:%d/swagger/index.html", conf.GetString("http.host"), conf.GetInt("http.port"))))
+	if err = app.Run(context.Background()); err != nil {
+		panic(err)
+	}
 }

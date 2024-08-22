@@ -1,16 +1,25 @@
 package repository
 
 import (
-	"basic/pkg/logger"
+	"context"
 	"fmt"
+	"time"
+
+	"github.com/glebarez/sqlite"
 	"github.com/spf13/viper"
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
+
+	"basic/pkg/logger"
+	"basic/pkg/zapgorm2"
 )
 
 type DBType string
+
+const ctxTxKey = "TxKey"
 
 const (
 	SqlServer  DBType = "data.sqlserver.connectionString"
@@ -29,13 +38,70 @@ func NewRepository(logger *logger.Logger, db *gorm.DB) *Repository {
 	}
 }
 
-func NewDB(dbType DBType, conf *viper.Viper) *gorm.DB {
-	var db *gorm.DB
-	if dbType == PostgreSQL {
-		db, _ = connectPostgresql(conf)
-		return db
+type Transaction interface {
+	Transaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
+
+func NewTransaction(r *Repository) Transaction {
+	return r
+}
+
+func (r *Repository) DB(ctx context.Context) *gorm.DB {
+	v := ctx.Value(ctxTxKey)
+	if v != nil {
+		if tx, ok := v.(*gorm.DB); ok {
+			return tx
+		}
 	}
-	db, _ = connectSqlServer(conf)
+	return r.db.WithContext(ctx)
+}
+
+func (r *Repository) Transaction(ctx context.Context, fn func(ctx context.Context) error) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		ctx = context.WithValue(ctx, ctxTxKey, tx)
+		return fn(ctx)
+	})
+}
+
+func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
+	var (
+		db  *gorm.DB
+		err error
+	)
+
+	logger := zapgorm2.New(l.Logger)
+	driver := conf.GetString("data.db.user.driver")
+	dsn := conf.GetString("data.db.user.dsn")
+
+	// GORM doc: https://gorm.io/docs/connecting_to_the_database.html
+	switch driver {
+	case "mysql":
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+			Logger: logger,
+		})
+	case "postgres":
+		db, err = gorm.Open(postgres.New(postgres.Config{
+			DSN:                  dsn,
+			PreferSimpleProtocol: true, // disables implicit prepared statement usage
+		}), &gorm.Config{})
+	case "sqlite":
+		db, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+	default:
+		panic("unknown db driver")
+	}
+	if err != nil {
+		panic(err)
+	}
+	db = db.Debug()
+
+	// Connection Pool config
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
 	return db
 }
 
