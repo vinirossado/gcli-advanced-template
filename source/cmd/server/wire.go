@@ -4,22 +4,23 @@
 package main
 
 import (
-	"log"
-	"net/http"
+	"basic/pkg/app"
+	"basic/pkg/logger"
+	"basic/pkg/server/http"
 
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 
+	"basic/pkg/jwt"
 	"basic/source/handler"
-	"basic/source/middleware"
 	"basic/source/repository"
 	routes "basic/source/router"
 	"basic/source/service"
 )
 
-var serverSet = wire.NewSet(routes.NewServerHTTP)
+var serverSet = wire.NewSet(routes.NewHTTPServer)
 
-var JwtSet = wire.NewSet(middleware.NewJwt)
+var JwtSet = wire.NewSet(jwt.NewJwt)
 
 var handlerSet = wire.NewSet(
 	handler.NewHandler,
@@ -38,23 +39,21 @@ var repositorySet = wire.NewSet(
 	repository.NewUserRepository,
 )
 
-func newApp(
-	httpServer *http.Server,
-) *app.App {
+func newApp(httpServer *http.Server) *app.App {
 	return app.NewApp(
-		app.WithServer(httpServer, job),
+		app.WithServer(httpServer),
 		app.WithName("demo-server"),
 	)
 }
 
-func NewWire(*viper.Viper, *log.Logger) (*app.App, func(), error) {
+func NewWire(*viper.Viper, *logger.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
 		repositorySet,
 		serviceSet,
 		handlerSet,
 		serverSet,
 		// sid.NewSid,
-		// jwt.NewJwt,
+		jwt.NewJwt,
 		newApp,
 	))
 }

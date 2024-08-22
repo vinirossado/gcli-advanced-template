@@ -8,7 +8,7 @@ services:
       SA_PASSWORD: "sua-maeEuOdeioReact2x"
       MSSQL_PID: "Express"
       MSSQL_TCP_PORT: "1433"
-      MSSQL_DATABASE: "sua-mae"
+      MSSQL_DATABASE: "master"
     ports:
       - "1433:1433"
   postgresql:

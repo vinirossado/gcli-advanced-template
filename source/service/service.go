@@ -1,16 +1,16 @@
 package service
 
 import (
+	"basic/pkg/jwt"
 	logger "basic/pkg/logger"
-	"basic/source/middleware"
 )
 
 type Service struct {
 	logger *logger.Logger
-	jwt    *middleware.JWT
+	jwt    *jwt.JWT
 }
 
-func NewService(logger *logger.Logger, jwt *middleware.JWT) *Service {
+func NewService(logger *logger.Logger, jwt *jwt.JWT) *Service {
 	return &Service{
 		logger: logger,
 		jwt:    jwt,

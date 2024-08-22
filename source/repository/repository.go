@@ -7,9 +7,9 @@ import (
 
 	"github.com/glebarez/sqlite"
 	"github.com/spf13/viper"
-	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlserver"
+
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
 
@@ -69,15 +69,15 @@ func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
 		err error
 	)
 
-	logger := zapgorm2.New(l.Logger)
+	log := zapgorm2.New(l.Logger)
 	driver := conf.GetString("data.db.user.driver")
 	dsn := conf.GetString("data.db.user.dsn")
 
 	// GORM doc: https://gorm.io/docs/connecting_to_the_database.html
 	switch driver {
-	case "mysql":
-		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-			Logger: logger,
+	case "sqlserver":
+		db, err = gorm.Open(sqlserver.Open(dsn), &gorm.Config{
+			Logger: log,
 		})
 	case "postgres":
 		db, err = gorm.Open(postgres.New(postgres.Config{

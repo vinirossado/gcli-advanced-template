@@ -1,9 +1,12 @@
-package migration
+package server
 
 import (
 	"basic/pkg/logger"
 	"basic/source/model"
+	"context"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"os"
 )
 
 type Migrate struct {
@@ -17,18 +20,16 @@ func NewMigrate(db *gorm.DB, log *logger.Logger) *Migrate {
 		log: log,
 	}
 }
-func (m *Migrate) Run() {
-	err := m.db.AutoMigrate(model.RetrieveAll()...)
-	if err != nil {
-		return
+func (m *Migrate) Start(ctx context.Context) error {
+	if err := m.db.AutoMigrate(&model.User{}); err != nil {
+		m.log.Error("user migrate error", zap.Error(err))
+		return err
 	}
-
-	m.log.Info("Migration ended")
+	m.log.Info("AutoMigrate success")
+	os.Exit(0)
+	return nil
 }
-
-func (m *Migrate) DropAll() {
-	err := m.db.Migrator().DropTable(model.RetrieveAll()...)
-	if err != nil {
-		return
-	}
+func (m *Migrate) Stop(ctx context.Context) error {
+	m.log.Info("AutoMigrate stop")
+	return nil
 }

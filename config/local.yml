@@ -1,26 +1,26 @@
 env: local
 http:
-  port: 8111
+  host: 0.0.0.0
+  #  host: 127.0.0.1
+  port: 8000
 security:
   api_sign:
     app_key: 123456
     app_security: 123456
   jwt:
-    key: 1234
+    key: QQYnRFerJTSEcrfB89fw8prOaObmrch8
 data:
-  sqlserver:
-    user: sa
-    password: sua-maeEuOdeioReact2x
-    host: 127.0.0.1
-    port: 1433
-    database: sua-mae
-    params: charset=utf8mb4&parseTime=True&loc=Local
-    connectionString: sqlserver://sa:sua-maeEuOdeioReact2x@127.0.0.1:1433?database=sua-mae&charset=utf8mb4&parseTime=True&loc=Local
-  postgresql:
-    user: postgres
-    password: sua-maeEuOdeioReact2x
-    connectionString: postgres://postgres:sua-maeEuOdeioReact2x@127.0.0.1:2345/sua-mae?sslmode=disable
-    host:
+  db:
+    #    user:
+    #      driver: sqlite
+    #      dsn: storage/gcli-test.db?_busy_timeout=5000
+    #    user:
+    #      driver: sqlserver
+    #      dsn: sqlserver://sa:LoremIpsum86@localhost:1433?database=master&charset=utf8mb4&parseTime=True&loc=Local
+
+    user:
+      driver: postgres
+      dsn: host=localhost user=postgres password=sua-maeEuOdeioReact2x dbname=sua-mae port=2345 sslmode=disable
   redis:
     addr: 127.0.0.1:6350
     password: ""
@@ -29,10 +29,10 @@ data:
     write_timeout: 0.2s
 
 log:
-  log_level: debug
-  encoding: console           # json or console
+  log_level: info
+  encoding: json           # json or console
   log_file_name: "./storage/logs/server.log"
-  max_backups: 30              
-  max_age: 7                   
-  max_size: 1024              
-  compress: true               
+  max_backups: 30
+  max_age: 7
+  max_size: 1024
+  compress: true

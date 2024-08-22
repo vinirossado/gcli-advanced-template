@@ -4,6 +4,7 @@
 package main
 
 import (
+	"basic/pkg/app"
 	"basic/pkg/logger"
 	"basic/source/migration"
 	"basic/source/repository"
@@ -11,19 +12,30 @@ import (
 	"github.com/spf13/viper"
 )
 
-var RepositorySet = wire.NewSet(
+var repositorySet = wire.NewSet(
 	repository.NewDB,
+	//repository.NewRedis,
 	repository.NewRepository,
 	repository.NewUserRepository,
 )
-
-var MigrateSet = wire.NewSet(
-	migration.NewMigrate,
+var serverSet = wire.NewSet(
+	server.NewMigrate,
 )
 
-func newApp(repository.DBType, *viper.Viper, *logger.Logger) (*migration.Migrate, func(), error) {
+// build App
+func newApp(
+	migrate *server.Migrate,
+) *app.App {
+	return app.NewApp(
+		app.WithServer(migrate),
+		app.WithName("demo-migrate"),
+	)
+}
+
+func NewWire(*viper.Viper, *logger.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
-		RepositorySet,
-		MigrateSet,
+		repositorySet,
+		serverSet,
+		newApp,
 	))
 }
