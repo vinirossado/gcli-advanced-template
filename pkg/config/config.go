@@ -14,13 +14,13 @@ func NewConfig(p string) *viper.Viper {
 	if envConf == "" {
 		envConf = p
 	}
-	if envConf == "" {
-		envConf = "../config/local.yml"
-	}
+	// if envConf == "" {
+	// 	envConf = "../config/local.yml"
+	// }
 
-	basepath := getConfigPath() + "/config/local.yml"
+	// basepath := getConfigPath() + "/config/local.yml"
 
-	return getConfig(basepath)
+	return getConfig(envConf)
 }
 
 func getConfig(path string) *viper.Viper {

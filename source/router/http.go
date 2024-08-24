@@ -1,48 +1,20 @@
-//package routes
-//
-//import (
-//	"basic/pkg/helper/resp"
-//	"basic/pkg/logger"
-//	"basic/source/handler"
-//	"basic/source/middleware"
-//	"github.com/gin-gonic/gin"
-//	"net/http"
-//)
-//
-//func NewServerHTTP(logger *logger.Logger,
-//	jwt *middleware.JWT,
-//	userHandler handler.UserHandler) *gin.Engine {
-//
-//	gin.SetMode(gin.ReleaseMode)
-//	r := gin.Default()
-//	r.Use(
-//		middleware.CORSMiddleware(),
-//	)
-//
-//	r.GET("/", func(ctx *gin.Context) {
-//		resp.HandleSuccess(ctx, http.StatusOK, "Connected", map[string]interface{}{
-//			"say": "Hi Welcome to your new API!",
-//		})
-//	})
-//
-//	BindUserRoutes(r, jwt, userHandler, logger)
-//
-//	return r
-//}
-
 package routes
 
 import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"basic/pkg/helper/resp"
 	"basic/pkg/jwt"
 	"basic/pkg/logger"
 	"basic/pkg/server/http"
 	"basic/source/handler"
 	"basic/source/middleware"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/swag/example/basic/docs"
 )
 
 func NewHTTPServer(
@@ -60,10 +32,10 @@ func NewHTTPServer(
 	)
 
 	// swagger doc
-	//docs.SwaggerInfo.BasePath = "/v1"
+	docs.SwaggerInfo.BasePath = "/v1"
 	s.GET("/swagger/*any", ginSwagger.WrapHandler(
 		swaggerfiles.Handler,
-		//ginSwagger.URL(fmt.Sprintf("http://localhost:%d/swagger/doc.json", conf.GetInt("app.http.port"))),
+		ginSwagger.URL(fmt.Sprintf("http://localhost:%d/swagger/doc.json", conf.GetInt("app.http.port"))),
 		ginSwagger.DefaultModelsExpandDepth(-1),
 		ginSwagger.PersistAuthorization(true),
 	))
@@ -76,7 +48,7 @@ func NewHTTPServer(
 	)
 	s.GET("/", func(ctx *gin.Context) {
 		logger.WithContext(ctx).Info("hello")
-		resp.HandleSuccess(ctx, 200, "", map[string]interface{}{
+		resp.HandleSuccess(ctx, 200, "Welcome to your new Golang API", map[string]interface{}{
 			":)": "Thank you for using Gcli!",
 		})
 	})
@@ -93,6 +65,7 @@ func NewHTTPServer(
 		noStrictAuthRouter := v1.Group("/").Use(middleware.NoStrictAuth(jwt, logger))
 		{
 			noStrictAuthRouter.GET("/user", userHandler.GetProfile)
+			// BindUserRoutes()
 		}
 
 		// Strict permission routing group

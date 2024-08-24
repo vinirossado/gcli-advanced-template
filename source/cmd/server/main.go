@@ -1,12 +1,14 @@
 package main
 
 import (
-	"basic/pkg/config"
-	"basic/pkg/logger"
 	"context"
 	"flag"
 	"fmt"
+
 	"go.uber.org/zap"
+
+	"basic/pkg/config"
+	"basic/pkg/logger"
 )
 
 func main() {

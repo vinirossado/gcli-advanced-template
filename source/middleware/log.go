@@ -3,12 +3,13 @@ package middleware
 import (
 	"basic/pkg/logger"
 	"bytes"
+	"io"
+	"time"
+
 	"github.com/duke-git/lancet/v2/cryptor"
 	"github.com/duke-git/lancet/v2/random"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"io"
-	"time"
 )
 
 func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
@@ -25,7 +26,7 @@ func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 		logger.WithValue(ctx, zap.String("request_url", ctx.Request.URL.String()))
 		if ctx.Request.Body != nil {
 			bodyBytes, _ := ctx.GetRawData()
-			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // 关键点
+			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 			logger.WithValue(ctx, zap.String("request_params", string(bodyBytes)))
 		}
 		logger.WithContext(ctx).Info("Request")
