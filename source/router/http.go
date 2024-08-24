@@ -1,12 +1,8 @@
 package routes
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"basic/pkg/helper/resp"
 	"basic/pkg/jwt"
@@ -14,7 +10,6 @@ import (
 	"basic/pkg/server/http"
 	"basic/source/handler"
 	"basic/source/middleware"
-	"github.com/swaggo/swag/example/basic/docs"
 )
 
 func NewHTTPServer(
@@ -30,15 +25,6 @@ func NewHTTPServer(
 		http.WithServerHost(conf.GetString("http.host")),
 		http.WithServerPort(conf.GetInt("http.port")),
 	)
-
-	// swagger doc
-	docs.SwaggerInfo.BasePath = "/v1"
-	s.GET("/swagger/*any", ginSwagger.WrapHandler(
-		swaggerfiles.Handler,
-		ginSwagger.URL(fmt.Sprintf("http://localhost:%d/swagger/doc.json", conf.GetInt("app.http.port"))),
-		ginSwagger.DefaultModelsExpandDepth(-1),
-		ginSwagger.PersistAuthorization(true),
-	))
 
 	s.Use(
 		middleware.CORSMiddleware(),

@@ -1,13 +1,15 @@
 package http
 
 import (
-	"basic/pkg/logger"
 	"context"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"basic/pkg/logger"
 )
 
 type Server struct {
