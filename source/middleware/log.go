@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"basic/pkg/logger"
 	"bytes"
 	"io"
 	"time"
@@ -10,6 +9,8 @@ import (
 	"github.com/duke-git/lancet/v2/random"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	"basic/pkg/logger"
 )
 
 func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
@@ -33,6 +34,7 @@ func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
 func ResponseLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: ctx.Writer}

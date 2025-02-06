@@ -28,7 +28,7 @@ func Map(source, destination any) {
 func mapStruct(sourceValue, destValue reflect.Value) {
 	destType := destValue.Type()
 
-	var maxIndex = 0
+	var maxIndex int
 
 	if destValue.NumField() > sourceValue.NumField() {
 		maxIndex = sourceValue.NumField()
