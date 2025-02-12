@@ -3,33 +3,34 @@ package main
 import (
 	"basic/pkg/config"
 	"basic/pkg/logger"
+	"fmt"
+	"os"
+	"path/filepath"
 
 	"context"
 	"flag"
 )
 
 func main() {
-	//conf := config.NewConfig()
-	//log := logger.NewLog(conf)
-	//
-	//dbType := repository.PostgreSQL
-	//
-	//_ = repository.NewDB(dbType, conf)
-	//
-	//app, cleanup, err := newApp(dbType, conf, log)
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
-	//app.Run()
-	//
-	////if it needs to drop all table from DB
-	////app.DropAll()
-	//
-	//defer cleanup()
-
-	var envConf = flag.String("conf", "../../../config/local.yml", "config path, eg: -conf ./config/local.yml")
+	var envConf = flag.String("conf", "", "config path, eg: -conf ./config/local.yml")
 	flag.Parse()
+
+	if *envConf == "" {
+		// Determine the correct path based on the current working directory
+		cwd, err := os.Getwd()
+		if err != nil {
+			panic(err)
+		}
+
+		if filepath.Base(cwd) == "server" {
+			*envConf = "../../../config/local.yml"
+		} else {
+			*envConf = "./config/local.yml"
+		}
+	}
+
+	fmt.Printf("Using config file: %s\n", *envConf)
+
 	conf := config.NewConfig(*envConf)
 
 	log := logger.NewLog(conf)

@@ -1,0 +1,2 @@
+{"level":"info","ts":1739386843.7591228,"caller":"migration/migration.go:31","msg":"AutoMigrate success"}
+{"level":"info","ts":1739386848.071715,"caller":"migration/migration.go:31","msg":"AutoMigrate success"}
