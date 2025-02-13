@@ -59,7 +59,11 @@ func (s *Server) Stop(ctx context.Context) error {
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	s.logger.Sugar().Info("Shutting down server...")
+
+	// The context is used to inform the server it has 5 seconds to finish
+	// the request it is currently handling
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	if err := s.httpSrv.Shutdown(ctx); err != nil {
 		s.logger.Sugar().Fatal("Server forced to shutdown: ", err)

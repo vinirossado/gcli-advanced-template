@@ -12,7 +12,9 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-const ctxLoggerKey = "zapLogger"
+type ctxLoggerKeyType string
+
+const ctxLoggerKey ctxLoggerKeyType = "zapLogger"
 
 type Logger struct {
 	*zap.Logger

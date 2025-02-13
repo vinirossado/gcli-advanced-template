@@ -28,7 +28,7 @@ var crc32tab = [...]uint32{
 }
 
 func Crc32FromString(str string) string {
-	var crc uint32 = ^uint32(0)
+	var crc = ^uint32(0)
 	for i := 0; i < len(str); i++ {
 		crc = (crc >> 8) ^ crc32tab[(crc^uint32(str[i]))&0xff]
 	}
@@ -37,7 +37,7 @@ func Crc32FromString(str string) string {
 }
 
 func Crc32FromBytes(str []byte) string {
-	var crc uint32 = ^uint32(0)
+	var crc = ^uint32(0)
 	for i := 0; i < len(str); i++ {
 		crc = (crc >> 8) ^ crc32tab[(crc^uint32(str[i]))&0xff]
 	}

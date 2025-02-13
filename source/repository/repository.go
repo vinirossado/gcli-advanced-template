@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/glebarez/sqlite"
@@ -11,7 +10,6 @@ import (
 	"gorm.io/driver/sqlserver"
 
 	"gorm.io/gorm"
-	gormLogger "gorm.io/gorm/logger"
 
 	"basic/pkg/logger"
 	"basic/pkg/zapgorm2"
@@ -19,10 +17,12 @@ import (
 
 type DBType string
 
-const ctxTxKey = "TxKey"
+type ctxKey string
+
+const ctxTxKey ctxKey = "TxKey"
 
 const (
-	SqlServer  DBType = "data.sqlserver.connectionString"
+	SQLServer  DBType = "data.sqlserver.connectionString"
 	PostgreSQL DBType = "data.postgresql.connectionString"
 )
 
@@ -103,28 +103,4 @@ func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	return db
-}
-
-func connectSqlServer(conf *viper.Viper) (*gorm.DB, error) {
-	fmt.Println(conf.GetString(string(SqlServer)))
-
-	db, err := gorm.Open(sqlserver.Open(conf.GetString(string(SqlServer))), &gorm.Config{
-		Logger: gormLogger.Default.LogMode(gormLogger.Info),
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	return db, nil
-}
-
-func connectPostgresql(conf *viper.Viper) (*gorm.DB, error) {
-	fmt.Println(conf.GetString(string(PostgreSQL)))
-	db, err := gorm.Open(postgres.Open(conf.GetString(string(PostgreSQL))), &gorm.Config{
-		Logger: gormLogger.Default.LogMode(gormLogger.Info),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to open PostgreSQL database: %w", err)
-	}
-	return db, nil
 }

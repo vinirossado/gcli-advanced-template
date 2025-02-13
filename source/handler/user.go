@@ -58,13 +58,13 @@ func (h *UserHandler) Login(ctx *gin.Context) {
 }
 
 func (h *UserHandler) GetProfile(ctx *gin.Context) {
-	userId := GetUserIdFromCtx(ctx)
-	if userId == "" {
+	userID := GetUserIDFromCtx(ctx)
+	if userID == "" {
 		resp.HandleError(ctx, http.StatusUnauthorized, "Unauthorized", nil)
 		return
 	}
 
-	user, err := h.userService.GetProfile(ctx, userId)
+	user, err := h.userService.GetProfile(ctx, userID)
 	if err != nil {
 		resp.HandleError(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
@@ -76,7 +76,7 @@ func (h *UserHandler) GetProfile(ctx *gin.Context) {
 }
 
 func (h *UserHandler) UpdateProfile(ctx *gin.Context) {
-	userId := GetUserIdFromCtx(ctx)
+	userID := GetUserIDFromCtx(ctx)
 
 	var req service.UpdateProfileRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -84,7 +84,7 @@ func (h *UserHandler) UpdateProfile(ctx *gin.Context) {
 		return
 	}
 
-	if err := h.userService.UpdateProfile(ctx, userId, &req); err != nil {
+	if err := h.userService.UpdateProfile(ctx, userID, &req); err != nil {
 		resp.HandleError(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}

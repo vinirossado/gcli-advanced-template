@@ -9,9 +9,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 type RegisterRequest struct {
@@ -37,8 +38,8 @@ type ChangePasswordRequest struct {
 }
 
 type UserResponse struct {
-	Id       uint   `json:"id"`
-	UserId   string `json:"userId"`
+	ID       uint   `json:"id"`
+	UserID   string `json:"userId"`
 	Username string `json:"username"`
 	Nickname string `json:"nickname"`
 	Email    string `json:"email"`
@@ -47,9 +48,9 @@ type UserResponse struct {
 type UserService interface {
 	Register(ctx context.Context, req *RegisterRequest) error
 	Login(ctx context.Context, req *LoginRequest) (string, error)
-	GetProfile(ctx context.Context, userId string) (*UserResponse, error)
-	UpdateProfile(ctx context.Context, userId string, req *UpdateProfileRequest) error
-	GenerateToken(ctx context.Context, userId string) (string, error)
+	GetProfile(ctx context.Context, userID string) (*UserResponse, error)
+	UpdateProfile(ctx context.Context, userID string, req *UpdateProfileRequest) error
+	GenerateToken(ctx context.Context, userID string) (string, error)
 }
 
 type userService struct {
@@ -75,7 +76,7 @@ func (s *userService) Register(ctx context.Context, req *RegisterRequest) error 
 	}
 
 	user := &model.User{
-		UserId:   uuid.GenUUID(),
+		UserID:   uuid.GenUUID(),
 		Username: req.Username,
 		Password: string(hashedPassword),
 		Email:    req.Email,
@@ -97,14 +98,14 @@ func (s *userService) Login(ctx context.Context, req *LoginRequest) (string, err
 	if err != nil {
 		return "", errors.Wrap(err, "failed to hash password")
 	}
-	token, err := s.GenerateToken(ctx, user.UserId)
+	token, err := s.GenerateToken(ctx, user.UserID)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to generate JWT token")
 	}
 	return token, nil
 }
 
-func (s *userService) GetProfile(ctx context.Context, userId string) (*UserResponse, error) {
+func (s *userService) GetProfile(ctx context.Context, userID string) (*UserResponse, error) {
 	if cache.Cache == nil {
 		fmt.Println("Cache not initialized.")
 		return &UserResponse{}, nil
@@ -118,7 +119,7 @@ func (s *userService) GetProfile(ctx context.Context, userId string) (*UserRespo
 		}
 	}
 
-	user, err := s.userRepo.GetByID(ctx, userId)
+	user, err := s.userRepo.GetByID(ctx, userID)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get user by ID")
 	}
@@ -136,8 +137,8 @@ func (s *userService) GetProfile(ctx context.Context, userId string) (*UserRespo
 	return &userResponse, nil
 }
 
-func (s *userService) UpdateProfile(ctx context.Context, userId string, req *UpdateProfileRequest) error {
-	user, err := s.userRepo.GetByID(ctx, userId)
+func (s *userService) UpdateProfile(ctx context.Context, userID string, req *UpdateProfileRequest) error {
+	user, err := s.userRepo.GetByID(ctx, userID)
 	if err != nil {
 		return errors.Wrap(err, "failed to get user by ID")
 	}
@@ -152,8 +153,8 @@ func (s *userService) UpdateProfile(ctx context.Context, userId string, req *Upd
 	return nil
 }
 
-func (s *userService) GenerateToken(ctx context.Context, userId string) (string, error) {
-	token, err := s.jwt.GenToken(userId, time.Now().Add(time.Hour*24*90))
+func (s *userService) GenerateToken(ctx context.Context, userID string) (string, error) {
+	token, err := s.jwt.GenToken(userID, time.Now().Add(time.Hour*24*90))
 	if err != nil {
 		return "", errors.Wrap(err, "failed to generate JWT token")
 	}

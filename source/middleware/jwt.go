@@ -4,9 +4,10 @@ import (
 	"basic/pkg/helper/resp"
 	"basic/pkg/jwt"
 	"basic/pkg/logger"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 func StrictAuth(j *jwt.JWT, logger *logger.Logger) gin.HandlerFunc {
@@ -67,6 +68,6 @@ func NoStrictAuth(j *jwt.JWT, logger *logger.Logger) gin.HandlerFunc {
 
 func recoveryLoggerFunc(ctx *gin.Context, logger *logger.Logger) {
 	if userInfo, ok := ctx.MustGet("claims").(*jwt.MyCustomClaims); ok {
-		logger.WithValue(ctx, zap.String("UserId", userInfo.UserId))
+		logger.WithValue(ctx, zap.String("UserId", userInfo.UserID))
 	}
 }
