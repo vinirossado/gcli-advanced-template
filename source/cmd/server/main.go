@@ -15,8 +15,11 @@ import (
 
 func main() {
 	var envConf = flag.String("conf", "", "config path, eg: -conf ./config/local.yml")
+
 	flag.Parse()
 
+	//TODO: Improve to always use the correct path for the config file starting from the root of the project
+	//TODO: Maybe place this boostrap code in a separate package
 	if *envConf == "" {
 		// Determine the correct path based on the current working directory
 		cwd, err := os.Getwd()
