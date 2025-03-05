@@ -16,6 +16,7 @@ func NewHandler(logger *logger.Logger) *Handler {
 		logger: logger,
 	}
 }
+
 func GetUserIDFromCtx(ctx *gin.Context) string {
 	v, exists := ctx.Get("claims")
 

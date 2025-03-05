@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,16 @@ func NewUserHandler(handler *Handler, userService service.UserService) *UserHand
 	}
 }
 
+// Register godoc
+// @Summary Register new user
+// @Description Register new user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param body body RegisterRequest true "Register Request"
+// @Success 201 {string} string "New account has been created."
+// @Failure 400 {string} string "invalid request"
+// @Router /register [post]
 func (h *UserHandler) Register(ctx *gin.Context) {
 	req := new(service.RegisterRequest)
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -39,20 +50,25 @@ func (h *UserHandler) Register(ctx *gin.Context) {
 	resp.HandleSuccess(ctx, http.StatusCreated, "New account has been created.", nil)
 }
 
-func (h *UserHandler) Login(ctx *gin.Context) {
+// Login processa a autenticação do usuário
+func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var req service.LoginRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		resp.HandleError(ctx, http.StatusBadRequest, errors.Wrap(err, "invalid request").Error(), nil)
+
+	// Decodifica o JSON da requisição
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		resp.HandleError(w, http.StatusBadRequest, errors.Wrap(err, "invalid request").Error(), nil)
 		return
 	}
 
-	token, err := h.userService.Login(ctx, &req)
+	// Executa o login no serviço
+	token, err := h.userService.Login(r.Context(), &req)
 	if err != nil {
-		resp.HandleError(ctx, http.StatusUnauthorized, err.Error(), nil)
+		resp.HandleError(w, http.StatusUnauthorized, err.Error(), nil)
 		return
 	}
 
-	resp.HandleSuccess(ctx, http.StatusOK, "Login Success", gin.H{
+	// Envia resposta JSON de sucesso
+	resp.HandleSuccess(w, http.StatusOK, "Login Success", map[string]string{
 		"accessToken": token,
 	})
 }

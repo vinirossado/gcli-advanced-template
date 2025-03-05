@@ -10,6 +10,7 @@ type Server interface {
 	Stop(context.Context) error
 }
 
+// TODO: Check if this is needed
 // Endpointer is registry endpoint.
 type Endpointer interface {
 	Endpoint() (*url.URL, error)

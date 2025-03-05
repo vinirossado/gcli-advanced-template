@@ -54,11 +54,8 @@ func (s *Server) Start(ctx context.Context) error {
 
 	return nil
 }
-func (s *Server) Stop(ctx context.Context) error {
-	s.logger.Sugar().Info("Shutting down server...")
 
-	// The context is used to inform the server it has 5 seconds to finish
-	// the request it is currently handling
+func (s *Server) Stop(ctx context.Context) error {
 	s.logger.Sugar().Info("Shutting down server...")
 
 	// The context is used to inform the server it has 5 seconds to finish

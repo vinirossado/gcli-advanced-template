@@ -7,12 +7,10 @@ import (
 	"github.com/glebarez/sqlite"
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlserver"
 
 	"gorm.io/gorm"
 
 	"basic/pkg/logger"
-	"basic/pkg/zapgorm2"
 )
 
 type DBType string
@@ -69,16 +67,12 @@ func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
 		err error
 	)
 
-	log := zapgorm2.New(l.Logger)
+	// log := zapgorm2.New(l.Logger)
 	driver := conf.GetString("data.db.user.driver")
 	dsn := conf.GetString("data.db.user.dsn")
 
 	// GORM doc: https://gorm.io/docs/connecting_to_the_database.html
 	switch driver {
-	case "sqlserver":
-		db, err = gorm.Open(sqlserver.Open(dsn), &gorm.Config{
-			Logger: log,
-		})
 	case "postgres":
 		db, err = gorm.Open(postgres.New(postgres.Config{
 			DSN:                  dsn,
@@ -92,6 +86,7 @@ func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+
 	db = db.Debug()
 
 	// Connection Pool config
@@ -102,5 +97,6 @@ func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
+
 	return db
 }

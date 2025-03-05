@@ -1,9 +1,8 @@
 package resp
 
 import (
+	"encoding/json"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 type response struct {
@@ -12,18 +11,24 @@ type response struct {
 	Data    interface{} `json:"data"`
 }
 
-func HandleSuccess(ctx *gin.Context, code int, message string, data interface{}) {
+// HandleSuccess sends a successful response with the given code, message, and data.
+func HandleSuccess(w http.ResponseWriter, code int, message string, data interface{}) {
 	if data == nil {
-		data = map[string]string{}
+		data = map[string]interface{}{}
 	}
 	resp := response{Code: code, Message: message, Data: data}
-	ctx.JSON(http.StatusOK, resp)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(resp)
 }
 
-func HandleError(ctx *gin.Context, httpCode int, message string, data interface{}) {
+// HandleError sends an error response with the given HTTP code, message, and data.
+func HandleError(w http.ResponseWriter, httpCode int, message string, data interface{}) {
 	if data == nil {
 		data = map[string]string{}
 	}
 	resp := response{Code: httpCode, Message: message, Data: data}
-	ctx.JSON(httpCode, resp)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpCode)
+	json.NewEncoder(w).Encode(resp)
 }
