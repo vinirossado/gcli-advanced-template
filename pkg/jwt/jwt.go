@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	"regexp"
 	"time"
 
@@ -47,12 +48,17 @@ func (j *JWT) ParseToken(tokenString string) (*MyCustomClaims, error) {
 	re := regexp.MustCompile(`(?i)Bearer `)
 	tokenString = re.ReplaceAllString(tokenString, "")
 	token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (any, error) {
+		// Reject tokens signed with a different algorithm (algorithm confusion attack)
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
 		return j.key, nil
 	})
-
-	if claims, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
-		return claims, nil
-	} else {
+	if err != nil {
 		return nil, err
 	}
+	if claims, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, fmt.Errorf("invalid token")
 }

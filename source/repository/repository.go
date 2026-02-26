@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/glebarez/sqlite"
@@ -69,7 +70,7 @@ func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
 		err error
 	)
 
-	log := zapgorm2.New(l.Logger)
+	gormLogger := zapgorm2.New(l.Logger)
 	driver := conf.GetString("data.db.user.driver")
 	dsn := conf.GetString("data.db.user.dsn")
 
@@ -77,27 +78,31 @@ func NewDB(conf *viper.Viper, l *logger.Logger) *gorm.DB {
 	switch driver {
 	case "sqlserver":
 		db, err = gorm.Open(sqlserver.Open(dsn), &gorm.Config{
-			Logger: log,
+			Logger: gormLogger,
 		})
 	case "postgres":
 		db, err = gorm.Open(postgres.New(postgres.Config{
 			DSN:                  dsn,
-			PreferSimpleProtocol: true, // disables implicit prepared statement usage
-		}), &gorm.Config{})
+			PreferSimpleProtocol: true,
+		}), &gorm.Config{Logger: gormLogger})
 	case "sqlite":
-		db, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{Logger: gormLogger})
 	default:
-		panic("unknown db driver")
+		log.Fatalf("unknown db driver %q — supported: sqlserver, postgres, sqlite", driver)
 	}
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed to connect to database (driver=%s): %v", driver, err)
 	}
-	db = db.Debug()
+
+	// Enable verbose query logging only in non-production environments
+	if env := conf.GetString("env"); env == "local" || env == "dev" {
+		db = db.Debug()
+	}
 
 	// Connection Pool config
 	sqlDB, err := db.DB()
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed to get underlying sql.DB: %v", err)
 	}
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)

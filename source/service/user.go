@@ -8,10 +8,10 @@ import (
 	"basic/source/repository"
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -106,16 +106,14 @@ func (s *userService) Login(ctx context.Context, req *LoginRequest) (string, err
 }
 
 func (s *userService) GetProfile(ctx context.Context, userID string) (*UserResponse, error) {
-	if cache.Cache == nil {
-		fmt.Println("Cache not initialized.")
-		return &UserResponse{}, nil
-	}
+	cacheKey := "user:" + userID
 
-	if entry, err := cache.Cache.Get("user"); err == nil {
-		var userResponse UserResponse
-		err = json.Unmarshal(entry, &userResponse)
-		if err == nil {
-			return &userResponse, nil
+	if cache.Cache != nil {
+		if entry, err := cache.Cache.Get(cacheKey); err == nil {
+			var userResponse UserResponse
+			if err = json.Unmarshal(entry, &userResponse); err == nil {
+				return &userResponse, nil
+			}
 		}
 	}
 
@@ -127,13 +125,14 @@ func (s *userService) GetProfile(ctx context.Context, userID string) (*UserRespo
 	var userResponse UserResponse
 	mapper.Map(user, &userResponse)
 
-	responseBytes, err := json.Marshal(userResponse)
-	if err == nil {
-		err = cache.Cache.Set("user", responseBytes)
-		if err != nil {
-			fmt.Println("Fail to save cache:", err)
+	if cache.Cache != nil {
+		if responseBytes, err := json.Marshal(userResponse); err == nil {
+			if err = cache.Cache.Set(cacheKey, responseBytes); err != nil {
+				s.logger.WithContext(ctx).Warn("failed to set user cache", zap.Error(err))
+			}
 		}
 	}
+
 	return &userResponse, nil
 }
 

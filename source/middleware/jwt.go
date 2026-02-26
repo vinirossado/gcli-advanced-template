@@ -42,12 +42,11 @@ func StrictAuth(j *jwt.JWT, logger *logger.Logger) gin.HandlerFunc {
 
 func NoStrictAuth(j *jwt.JWT, logger *logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		// Only accept token from Authorization header or secure cookie — never query params
+		// (query params appear in server logs, browser history, and reverse proxy access logs)
 		tokenString := ctx.Request.Header.Get("Authorization")
 		if tokenString == "" {
 			tokenString, _ = ctx.Cookie("accessToken")
-		}
-		if tokenString == "" {
-			tokenString = ctx.Query("accessToken")
 		}
 		if tokenString == "" {
 			ctx.Next()

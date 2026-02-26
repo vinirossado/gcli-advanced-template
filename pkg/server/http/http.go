@@ -44,8 +44,12 @@ func WithServerPort(port int) Option {
 
 func (s *Server) Start(ctx context.Context) error {
 	s.httpSrv = &http.Server{
-		Addr:    fmt.Sprintf("%s:%d", s.host, s.port),
-		Handler: s,
+		Addr:              fmt.Sprintf("%s:%d", s.host, s.port),
+		Handler:           s,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -57,12 +61,7 @@ func (s *Server) Start(ctx context.Context) error {
 func (s *Server) Stop(ctx context.Context) error {
 	s.logger.Sugar().Info("Shutting down server...")
 
-	// The context is used to inform the server it has 5 seconds to finish
-	// the request it is currently handling
-	s.logger.Sugar().Info("Shutting down server...")
-
-	// The context is used to inform the server it has 5 seconds to finish
-	// the request it is currently handling
+	// Give in-flight requests up to 5 seconds to complete before forcing shutdown
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	if err := s.httpSrv.Shutdown(ctx); err != nil {

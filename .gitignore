@@ -1,0 +1,11 @@
+# Production config contains real credentials — never commit it
+config/prod.yml
+
+# Build output
+bin/
+
+# Logs
+storage/logs/
+
+# Local test DB
+storage/*.db

@@ -15,7 +15,6 @@ import (
 
 func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// The configuration is initialized once per request
 		uuid, err := random.UUIdV4()
 		if err != nil {
 			return
@@ -23,13 +22,15 @@ func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 		trace := cryptor.Md5String(uuid)
 		logger.WithValue(ctx, zap.String("trace", trace))
 		logger.WithValue(ctx, zap.String("request_method", ctx.Request.Method))
-		logger.WithValue(ctx, zap.Any("request_headers", ctx.Request.Header))
-		logger.WithValue(ctx, zap.String("request_url", ctx.Request.URL.String()))
+		logger.WithValue(ctx, zap.String("request_url", ctx.Request.URL.Path))
+
+		// Read and restore body so downstream handlers can still read it,
+		// but do NOT log it — it may contain passwords or other sensitive data
 		if ctx.Request.Body != nil {
 			bodyBytes, _ := ctx.GetRawData()
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-			logger.WithValue(ctx, zap.String("request_params", string(bodyBytes)))
 		}
+
 		logger.WithContext(ctx).Info("Request")
 		ctx.Next()
 	}
@@ -37,21 +38,13 @@ func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 
 func ResponseLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: ctx.Writer}
-		ctx.Writer = blw
 		startTime := time.Now()
 		ctx.Next()
 		duration := time.Since(startTime).String()
-		logger.WithContext(ctx).Info("Response", zap.Any("response_body", blw.body.String()), zap.Any("time", duration))
+		// Log status code and duration only — not the response body (may contain PII)
+		logger.WithContext(ctx).Info("Response",
+			zap.Int("status", ctx.Writer.Status()),
+			zap.String("duration", duration),
+		)
 	}
-}
-
-type bodyLogWriter struct {
-	gin.ResponseWriter
-	body *bytes.Buffer
-}
-
-func (w bodyLogWriter) Write(b []byte) (int, error) {
-	w.body.Write(b)
-	return w.ResponseWriter.Write(b)
 }

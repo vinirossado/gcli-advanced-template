@@ -9,6 +9,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"basic/pkg/cache"
 	"basic/pkg/config"
 	"basic/pkg/logger"
 )
@@ -36,6 +37,8 @@ func main() {
 	conf := config.NewConfig(*envConf)
 
 	log := logger.NewLog(conf)
+
+	cache.MemoryCache()
 
 	app, cleanup, err := NewWire(conf, log)
 	defer cleanup()
