@@ -1,4 +1,5 @@
 # Production config contains real credentials — never commit it
+# Copy prod.example.yml → prod.yml and fill in real values
 config/prod.yml
 
 # Build output

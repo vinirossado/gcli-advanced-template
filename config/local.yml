@@ -12,6 +12,7 @@ security:
     app_security: 123456
   jwt:
     key: QQYnRFerJTSEcrfB89fw8prOaObmrch8
+    expiry: 24h
 data:
   db:
     #    user:

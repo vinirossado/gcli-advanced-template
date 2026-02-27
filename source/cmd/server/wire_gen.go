@@ -24,15 +24,19 @@ import (
 func NewWire(viperViper *viper.Viper, loggerLogger *logger.Logger) (*app.App, func(), error) {
 	jwtJWT := jwt.NewJwt(viperViper)
 	handlerHandler := handler.NewHandler(loggerLogger)
-	serviceService := service.NewService(loggerLogger, jwtJWT)
+	serviceService := service.NewService(loggerLogger, jwtJWT, viperViper)
 	db := repository.NewDB(viperViper, loggerLogger)
 	repositoryRepository := repository.NewRepository(loggerLogger, db)
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	server := routes.NewHTTPServer(loggerLogger, viperViper, jwtJWT, userHandler)
+	server := routes.NewHTTPServer(loggerLogger, viperViper, jwtJWT, db, userHandler)
 	appApp := newApp(server)
 	return appApp, func() {
+		// Close the underlying database connection pool on graceful shutdown
+		if sqlDB, err := db.DB(); err == nil {
+			sqlDB.Close()
+		}
 	}, nil
 }
 

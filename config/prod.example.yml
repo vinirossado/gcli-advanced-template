@@ -1,0 +1,34 @@
+env: prod
+http:
+  host: 0.0.0.0
+  port: 8000
+  cors:
+    allowed_origins:
+      - "https://yourdomain.com"
+security:
+  api_sign:
+    app_key: REPLACE_ME
+    app_security: REPLACE_ME
+  jwt:
+    key: REPLACE_ME_WITH_A_STRONG_RANDOM_KEY
+    expiry: 8h
+data:
+  db:
+    user:
+      driver: postgres
+      dsn: REPLACE_ME  # e.g. host=db user=app password=secret dbname=app port=5432 sslmode=require
+  redis:
+    addr: REPLACE_ME
+    password: REPLACE_ME
+    db: 0
+    read_timeout: 0.2s
+    write_timeout: 0.2s
+
+log:
+  log_level: warn
+  encoding: json
+  log_file_name: "./storage/logs/server.log"
+  max_backups: 30
+  max_age: 7
+  max_size: 1024
+  compress: true

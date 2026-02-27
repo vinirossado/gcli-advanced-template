@@ -153,7 +153,11 @@ func (s *userService) UpdateProfile(ctx context.Context, userID string, req *Upd
 }
 
 func (s *userService) GenerateToken(ctx context.Context, userID string) (string, error) {
-	token, err := s.jwt.GenToken(userID, time.Now().Add(time.Hour*24*90))
+	expiry := s.conf.GetDuration("security.jwt.expiry")
+	if expiry == 0 {
+		expiry = 24 * time.Hour // safe default: 24 hours
+	}
+	token, err := s.jwt.GenToken(userID, time.Now().Add(expiry))
 	if err != nil {
 		return "", errors.Wrap(err, "failed to generate JWT token")
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 
 	"basic/pkg/helper/resp"
 	"basic/pkg/jwt"
@@ -18,9 +19,9 @@ func NewHTTPServer(
 	logger *logger.Logger,
 	conf *viper.Viper,
 	jwt *jwt.JWT,
+	db *gorm.DB,
 	userHandler *handler.UserHandler,
 ) *httpserver.Server {
-	// Use release mode in production; debug mode otherwise
 	if env := conf.GetString("env"); env == "prod" || env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	} else {
@@ -40,8 +41,17 @@ func NewHTTPServer(
 		middleware.RequestLogMiddleware(logger),
 	)
 
-	// Health check — required by load balancers and Kubernetes probes
+	// Health check — verifies DB connectivity for load balancers and k8s probes
 	s.GET("/health", func(ctx *gin.Context) {
+		sqlDB, err := db.DB()
+		if err != nil {
+			ctx.JSON(http.StatusServiceUnavailable, gin.H{"status": "unhealthy", "error": "db unavailable"})
+			return
+		}
+		if err = sqlDB.PingContext(ctx.Request.Context()); err != nil {
+			ctx.JSON(http.StatusServiceUnavailable, gin.H{"status": "unhealthy", "error": "db unreachable"})
+			return
+		}
 		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 
@@ -54,19 +64,16 @@ func NewHTTPServer(
 
 	v1 := s.Group("/v1")
 	{
-		// No route group has permission
 		noAuthRouter := v1.Group("/")
 		{
 			noAuthRouter.POST("/register", userHandler.Register)
 			noAuthRouter.POST("/login", userHandler.Login)
 		}
-		// Non-strict permission routing group
 		noStrictAuthRouter := v1.Group("/").Use(middleware.NoStrictAuth(jwt, logger))
 		{
 			noStrictAuthRouter.GET("/user", userHandler.GetProfile)
 		}
 
-		// Strict permission routing group
 		strictAuthRouter := v1.Group("/")
 		strictAuthRouter.Use(middleware.StrictAuth(jwt, logger))
 		{
