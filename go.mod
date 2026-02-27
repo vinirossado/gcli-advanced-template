@@ -10,7 +10,7 @@ require (
 	github.com/google/wire v0.7.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.21.0
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.27.1
 	golang.org/x/crypto v0.48.0
 	golang.org/x/time v0.14.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
