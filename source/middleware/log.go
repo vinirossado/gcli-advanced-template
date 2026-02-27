@@ -5,9 +5,8 @@ import (
 	"io"
 	"time"
 
-	"github.com/duke-git/lancet/v2/cryptor"
-	"github.com/duke-git/lancet/v2/random"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 
 	"basic/pkg/logger"
@@ -15,11 +14,7 @@ import (
 
 func RequestLogMiddleware(logger *logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		uuid, err := random.UUIdV4()
-		if err != nil {
-			return
-		}
-		trace := cryptor.Md5String(uuid)
+		trace := uuid.New().String()
 		logger.WithValue(ctx, zap.String("trace", trace))
 		logger.WithValue(ctx, zap.String("request_method", ctx.Request.Method))
 		logger.WithValue(ctx, zap.String("request_url", ctx.Request.URL.Path))

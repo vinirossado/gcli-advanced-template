@@ -5,6 +5,9 @@ http:
   cors:
     allowed_origins:
       - "https://yourdomain.com"
+  rate_limit:
+    rps: 10
+    burst: 30
 security:
   api_sign:
     app_key: REPLACE_ME

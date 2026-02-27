@@ -6,6 +6,9 @@ http:
     allowed_origins:
       - "http://localhost:3000"
       - "http://localhost:8080"
+  rate_limit:
+    rps: 20
+    burst: 50
 security:
   api_sign:
     app_key: 123456

@@ -1,11 +1,13 @@
 package middleware
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"net/http"
 	"sort"
 	"strings"
 
-	"github.com/duke-git/lancet/v2/cryptor"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
@@ -39,13 +41,18 @@ func SignMiddleware(logger *logger.Logger, conf *viper.Viper) gin.HandlerFunc {
 		}
 		sort.Slice(keys, func(i, j int) bool { return strings.ToLower(keys[i]) < strings.ToLower(keys[j]) })
 
-		var str string
+		var msg strings.Builder
 		for _, k := range keys {
-			str += k + data[k]
+			msg.WriteString(k)
+			msg.WriteString(data[k])
 		}
-		str += conf.GetString("security.api_sign.app_security")
 
-		if ctx.Request.Header.Get("Sign") != strings.ToUpper(cryptor.Md5String(str)) {
+		secret := conf.GetString("security.api_sign.app_security")
+		mac := hmac.New(sha256.New, []byte(secret))
+		mac.Write([]byte(msg.String()))
+		expected := strings.ToUpper(hex.EncodeToString(mac.Sum(nil)))
+
+		if ctx.Request.Header.Get("Sign") != expected {
 			resp.HandleError(ctx, http.StatusBadRequest, "BadRequest", nil)
 			ctx.Abort()
 			return

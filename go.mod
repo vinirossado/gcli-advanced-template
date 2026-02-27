@@ -1,6 +1,6 @@
 module basic
 
-go 1.22.4
+go 1.24.0
 
 require (
 	github.com/allegro/bigcache/v3 v3.1.0
@@ -12,6 +12,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.32.0
+	golang.org/x/time v0.14.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/driver/sqlserver v1.5.4
@@ -21,7 +22,6 @@ require (
 require (
 	github.com/bytedance/sonic/loader v0.2.3 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect
-	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/glebarez/go-sqlite v1.22.0 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
@@ -36,7 +36,6 @@ require (
 
 require (
 	github.com/bytedance/sonic v1.12.8 // indirect
-	github.com/duke-git/lancet/v2 v2.3.4
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/gin-contrib/sse v1.0.0 // indirect

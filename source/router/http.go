@@ -37,6 +37,7 @@ func NewHTTPServer(
 
 	s.Use(
 		middleware.CORSMiddleware(conf.GetStringSlice("http.cors.allowed_origins")),
+		middleware.RateLimitMiddleware(conf),
 		middleware.ResponseLogMiddleware(logger),
 		middleware.RequestLogMiddleware(logger),
 	)
